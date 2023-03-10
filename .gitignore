@@ -41,6 +41,7 @@ CMakeLists.txt
 *.x86_64
 *.hex
 src/a.out
+src/s21_test
 
 # Debug files
 *.dSYM/

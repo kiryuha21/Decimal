@@ -2,6 +2,4 @@
 
 #include "s21_decimal.h"
 
-int main() {
-    puts("place for manual testing");
-}
+int main() { puts("place for manual testing"); }
