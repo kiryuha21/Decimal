@@ -23,30 +23,29 @@ LIB = s21_decimal.a
 
 REPORT_DIR = report
 
-all: clean gcov_report $(LIB) test
-
-test: $(SRC_C_FILES) $(SRC_H_FILES)
+apply_clang: 
 	cp ../materials/linters/.clang-format .
 	clang-format -i *.[ch]
 	rm -f .clang-format
+
+all: clean gcov_report $(LIB) test
+
+test: apply_clang $(SRC_C_FILES) $(SRC_H_FILES)
 	$(CC) $(FLAGS) $(SRC_C_FILES) $(SRC_H_FILES) $(TEST_C_FILES) $(TEST_H_FILES) -o $(TEST_TARGET) $(ADDITIONAL_FLAGS)
 	./$(TEST_TARGET)
 
-random_tests: $(SRC_C_FILES) $(SRC_H_FILES)
-	cp ../materials/linters/.clang-format .
-	clang-format -i *.[ch]
-	rm -f .clang-format
+random_tests: apply_clang $(SRC_C_FILES) $(SRC_H_FILES)
 	$(CC) $(FLAGS) $(SRC_C_FILES) $(SRC_H_FILES) $(RANDOM_TESTS_FILE) $(TEST_H_FILES) -o $(TEST_TARGET) $(ADDITIONAL_FLAGS)
 	./$(TEST_TARGET)
 
-gcov_report:
+gcov_report: apply_clang
 	$(CC) --coverage $(FLAGS) $(SRC_C_FILES) $(TEST_C_FILES) -o $(TEST_TARGET) $(ADDITIONAL_FLAGS)
 	./$(TEST_TARGET)
 	lcov -t "$(TEST_TARGET)" -o $(TEST_TARGET).info -c -d .
 	genhtml -o report $(TEST_TARGET).info
 	rm *.gcda *.gcno *.info
 
-$(LIB):
+$(LIB): apply_clang
 	$(CC) -c $(SRC_C_FILES) $(ADDITIONAL_FLAGS)
 	ar rcv $(LIB) *.o
 	ranlib $(LIB)
