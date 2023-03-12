@@ -60,5 +60,6 @@ void set_bit(int *val, int index, int bit);
 int get_sign(const s21_decimal *val);
 void set_sign(s21_decimal *val, int sign);
 int get_exponent(const s21_decimal *val);
+void set_exponent(s21_decimal *val, int exp);
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_H

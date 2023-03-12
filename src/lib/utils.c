@@ -23,3 +23,10 @@ void set_sign(s21_decimal* val, int sign) {
 int get_exponent(const s21_decimal* val) {
     return (val->bits[3] & EXPONENT_MASK) >> 16;
 }
+
+void set_exponent(s21_decimal* val, int exp) {
+    for (int i = 0; i < 8 && exp > 0; ++i) {
+        set_bit(&val->bits[3], 16 + i, exp % 2);
+        exp /= 2;
+    }
+}
