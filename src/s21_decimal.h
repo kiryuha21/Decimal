@@ -6,8 +6,9 @@
 #define SIGN_BIT 31
 #define NEGATIVE 1
 #define POSITIVE 0
-#define EXPONENT_START 16  // TODO: not sure if it necessary
-#define EXPONENT_END 23    // TODO: not sure if it necessary
+#define EXPONENT_MASK 0x00FF0000
+#define DEFAULT_DECIMAL \
+  { 0, 0, 0, 0 }
 
 typedef struct s21_decimal {
   int bits[4];
@@ -52,5 +53,12 @@ int s21_is_greater(s21_decimal, s21_decimal);
 int s21_is_greater_or_equal(s21_decimal, s21_decimal);
 int s21_is_equal(s21_decimal, s21_decimal);
 int s21_is_not_equal(s21_decimal, s21_decimal);
+
+// utils
+int get_bit(int val, int index);
+void set_bit(int *val, int index, int bit);
+int get_sign(const s21_decimal *val);
+void set_sign(s21_decimal *val, int sign);
+int get_exponent(const s21_decimal *val);
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_H
