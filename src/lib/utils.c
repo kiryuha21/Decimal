@@ -86,6 +86,28 @@ int add_one_sign_decimals(const s21_decimal* value_1,
   return ret;
 }
 
+int sub_diff_sign_decimals(const s21_decimal* value_1,
+                           const s21_decimal* value_2, s21_decimal* result) {
+  // TODO: if value_1 < value_2 then value_1 <=> value_2, sign = -sign
+  int ret = OK;
+  unsigned long long int overflow = 0;
+  unsigned long long int bit_val;
+  for (int i = 0; i < 3; ++i) {
+    if (value_1->bits[i] >= value_2->bits[i] + overflow) {
+      bit_val = value_1->bits[i] - value_2->bits[i] - overflow;
+      overflow = 0;
+    } else {
+      bit_val = MAX_BIT - value_2->bits[i] + value_1->bits[i] - overflow;
+      overflow = 1;
+    }
+    result->bits[i] = bit_val;
+  }
+  if (overflow != 0) {
+    ret = TOO_LARGE;  // if used with value_1 < value_2
+  }
+  return ret;
+}
+
 int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp) {
   int ret = OK;
 

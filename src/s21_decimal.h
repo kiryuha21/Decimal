@@ -66,6 +66,8 @@ void change_sign(s21_decimal *val);
 int scale_decimals(s21_decimal *num1, s21_decimal *num2, unsigned int *scale);
 int add_one_sign_decimals(const s21_decimal *value_1,
                           const s21_decimal *value_2, s21_decimal *result);
+int sub_diff_sign_decimals(const s21_decimal *value_1,
+                           const s21_decimal *value_2, s21_decimal *result);
 int scal_mul(s21_decimal *val, unsigned int num);
 void null_decimal(s21_decimal *val);
 

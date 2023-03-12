@@ -11,6 +11,12 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   } else if (get_sign(&value_1) == NEGATIVE && get_sign(&value_2) == NEGATIVE) {
     ret = add_one_sign_decimals(&value_1, &value_2, result);
     set_sign(result, NEGATIVE);
+  } else if (get_sign(&value_1) == NEGATIVE && get_sign(&value_2) == POSITIVE) {
+    ret = sub_diff_sign_decimals(&value_1, &value_2,
+                                 result);  // TODO: handle res sign in sub
+  } else if (get_sign(&value_1) == POSITIVE && get_sign(&value_2) == NEGATIVE) {
+    ret = sub_diff_sign_decimals(&value_1, &value_2,
+                                 result);  // TODO: handle res sign in sub
   }
   return ret;
 }
@@ -26,6 +32,12 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   } else if (get_sign(&value_1) == NEGATIVE && get_sign(&value_2) == POSITIVE) {
     ret = add_one_sign_decimals(&value_1, &value_2, result);
     set_sign(result, NEGATIVE);
+  } else if (get_sign(&value_1) == POSITIVE && get_sign(&value_2) == POSITIVE) {
+    ret = sub_diff_sign_decimals(&value_1, &value_2,
+                                 result);  // TODO: handle res sign in sub
+  } else if (get_sign(&value_1) == NEGATIVE && get_sign(&value_2) == NEGATIVE) {
+    ret = add_one_sign_decimals(&value_1, &value_2,
+                                result);  // TODO: handle res sign in sub
   }
   return ret;
 }
