@@ -1,5 +1,3 @@
 #include "s21_decimal_testing.h"
 
-Suite* get_comparisons_suite() {
-
-}
+Suite* get_comparisons_suite() {}

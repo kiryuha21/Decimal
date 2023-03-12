@@ -26,6 +26,7 @@ REPORT_DIR = report
 apply_clang: 
 	cp ../materials/linters/.clang-format .
 	clang-format -i *.[ch]
+	clang-format -i */*.[ch]
 	rm -f .clang-format
 
 all: clean gcov_report $(LIB) test
