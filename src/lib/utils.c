@@ -105,3 +105,9 @@ int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp) {
 
   return ret;
 }
+
+void null_decimal(s21_decimal* val) {
+  for (int i = 0; i < 4; ++i) {
+    val->bits[i] = 0;
+  }
+}
