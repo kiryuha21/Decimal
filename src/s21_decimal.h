@@ -11,7 +11,7 @@
   { 0, 0, 0, 0 }
 
 typedef struct s21_decimal {
-  int bits[4];
+  unsigned int bits[4];
 } s21_decimal;
 
 // common for all functions except compare ones
@@ -55,11 +55,17 @@ int s21_is_equal(s21_decimal, s21_decimal);
 int s21_is_not_equal(s21_decimal, s21_decimal);
 
 // utils
-int get_bit(int val, int index);
-void set_bit(int *val, int index, int bit);
+int get_bit(unsigned int val, int index);
+void set_bit(unsigned int *val, int index, int bit);
 int get_sign(const s21_decimal *val);
 void set_sign(s21_decimal *val, int sign);
-int get_exponent(const s21_decimal *val);
-void set_exponent(s21_decimal *val, int exp);
+unsigned int get_exponent(const s21_decimal *val);
+void set_exponent(s21_decimal *val, unsigned int exp);
+int is_zero(const s21_decimal *val);
+void change_sign(s21_decimal *val);
+int scale_decimals(s21_decimal *num1, s21_decimal *num2, unsigned int *scale);
+int add_one_sign_decimals(const s21_decimal *value_1,
+                          const s21_decimal *value_2, s21_decimal *result);
+int scal_mul(s21_decimal *val, unsigned int num);
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_H
