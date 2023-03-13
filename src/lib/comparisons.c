@@ -24,7 +24,7 @@ int s21_is_equal(s21_decimal first, s21_decimal second) {
   if (!is_zero(&first) && first.bits[3] != second.bits[3]) {
     ret = FALSE;
   }
-  return FALSE;
+  return ret;
 }
 
 int s21_is_not_equal(s21_decimal first, s21_decimal second) { return TRUE; }
