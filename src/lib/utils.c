@@ -133,3 +133,9 @@ void null_decimal(s21_decimal* val) {
     val->bits[i] = 0;
   }
 }
+
+void swap_decimals(s21_decimal* val1, s21_decimal* val2) {
+  s21_decimal cp = *val2;
+  *val2 = *val1;
+  *val1 = cp;
+}

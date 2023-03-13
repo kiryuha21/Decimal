@@ -70,5 +70,6 @@ int sub_diff_sign_decimals(const s21_decimal *value_1,
                            const s21_decimal *value_2, s21_decimal *result);
 int scal_mul(s21_decimal *val, unsigned int num);
 void null_decimal(s21_decimal *val);
+void swap_decimals(s21_decimal *val1, s21_decimal *val2);
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_H
