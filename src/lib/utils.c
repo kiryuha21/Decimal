@@ -13,7 +13,7 @@ void set_bit(unsigned int* val, int index, int bit) {
 }
 
 int get_sign(const s21_decimal* val) {
-  return (val->bits[3] & (1 << SIGN_BIT)) ? NEGATIVE : POSITIVE;
+  return get_bit(val->bits[3], SIGN_BIT) ? NEGATIVE : POSITIVE;
 }
 
 void set_sign(s21_decimal* val, int sign) {
