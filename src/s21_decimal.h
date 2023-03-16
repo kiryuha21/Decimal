@@ -8,7 +8,9 @@
 #define POSITIVE 0
 #define EXPONENT_MASK 0x00FF0000
 #define DEFAULT_DECIMAL \
-  { 0, 0, 0, 0 }
+  {                     \
+    { 0, 0, 0, 0 }      \
+  }
 
 typedef struct s21_decimal {
   unsigned int bits[4];
@@ -64,14 +66,16 @@ void set_exponent(s21_decimal *val, unsigned int exp);
 int is_zero(const s21_decimal *val);
 void change_sign(s21_decimal *val);
 int scale_decimals(s21_decimal *num1, s21_decimal *num2, unsigned int *scale);
-int add_same_signs(const s21_decimal *value_1,
-                   const s21_decimal *value_2, s21_decimal *result);
+int add_same_signs(const s21_decimal *value_1, const s21_decimal *value_2,
+                   s21_decimal *result);
 s21_decimal decimal_abs(s21_decimal val);
-        int sub_diff_signs(s21_decimal value_1,
-                           s21_decimal value_2, s21_decimal* result);
+int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
+                   s21_decimal *result);
 int scal_mul(s21_decimal *val, unsigned int num);
 void null_decimal(s21_decimal *val);
 void swap_decimals(s21_decimal *val1, s21_decimal *val2);
 void reduce_exponent(s21_decimal *val);
+s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,
+                           unsigned int bit2, unsigned int bit3);
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_H

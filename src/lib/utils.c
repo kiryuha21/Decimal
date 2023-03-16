@@ -66,10 +66,10 @@ int scal_mul(s21_decimal* val, unsigned int num) {
   return ret;
 }
 
-int add_same_signs(const s21_decimal* value_1,
-                   const s21_decimal* value_2, s21_decimal* result) {
+int add_same_signs(const s21_decimal* value_1, const s21_decimal* value_2,
+                   s21_decimal* result) {
   int ret = OK;
-    set_sign(result, get_sign(value_1));
+  set_sign(result, get_sign(value_1));
   unsigned long long int overflow = 0;
   for (int i = 0; i < 3; ++i) {
     unsigned long long int bit_val = value_1->bits[i] + value_2->bits[i];
@@ -89,17 +89,18 @@ int add_same_signs(const s21_decimal* value_1,
 }
 
 s21_decimal decimal_abs(s21_decimal val) {
-    s21_decimal res = val;
-    set_sign(&res, POSITIVE);
-    return res;
+  s21_decimal res = val;
+  set_sign(&res, POSITIVE);
+  return res;
 }
 
-int sub_diff_signs(s21_decimal value_1,
-                   s21_decimal value_2, s21_decimal* result) {
+int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
+                   s21_decimal* result) {
   int ret = OK;
   set_sign(result, get_sign(&value_1));
-  if (s21_is_greater_or_equal(decimal_abs(value_1), decimal_abs(value_2)) == FALSE) {
-      swap_decimals(&value_1, &value_2);
+  if (s21_is_greater_or_equal(decimal_abs(value_1), decimal_abs(value_2)) ==
+      FALSE) {
+    swap_decimals(&value_1, &value_2);
   }
   unsigned long long int overflow = 0;
   unsigned long long int bit_val;
@@ -152,15 +153,21 @@ void swap_decimals(s21_decimal* val1, s21_decimal* val2) {
   *val1 = cp;
 }
 
-void reduce_exponent(s21_decimal *val) {
-    unsigned int exp = get_exponent(val);
-    while (is_zero(val) == FALSE && val->bits[0] % 10 == 0) {
-        val->bits[0] /= 10;
-        val->bits[0] += val->bits[1] % 10 * MAX_BIT / 10;
-        val->bits[1] /= 10;
-        val->bits[1] += val->bits[2] % 10 * MAX_BIT / 10;
-        val->bits[2] /= 10;
-        ++exp;
-    }
-    set_exponent(val, exp);
+void reduce_exponent(s21_decimal* val) {
+  unsigned int exp = get_exponent(val);
+  while (is_zero(val) == FALSE && val->bits[0] % 10 == 0) {
+    val->bits[0] /= 10;
+    val->bits[0] += val->bits[1] % 10 * MAX_BIT / 10;
+    val->bits[1] /= 10;
+    val->bits[1] += val->bits[2] % 10 * MAX_BIT / 10;
+    val->bits[2] /= 10;
+    ++exp;
+  }
+  set_exponent(val, exp);
+}
+
+s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,
+                           unsigned int bit2, unsigned int bit3) {
+  s21_decimal res = {{bit0, bit1, bit2, bit3}};
+  return res;
 }
