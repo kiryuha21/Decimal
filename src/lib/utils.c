@@ -171,3 +171,15 @@ s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,
   s21_decimal res = {{bit0, bit1, bit2, bit3}};
   return res;
 }
+
+int get_elder_bit_index(const s21_decimal* val) {
+    if (val->bits[1] == 0) {
+        return 2;
+    }
+
+    if (val->bits[0] == 0) {
+        return 1;
+    }
+
+    return 0;
+}

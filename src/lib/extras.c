@@ -1,6 +1,22 @@
 #include "../s21_decimal.h"
 
-int s21_floor(s21_decimal value, s21_decimal *result) { return OK; }
+int s21_floor(s21_decimal value, s21_decimal *result) {
+    *result = value;
+
+    int exp = (int)get_exponent(&value);
+
+    for (int i = 2; exp > 0 && i >= 0; --i) {
+        for (; result->bits[i] > 0 && exp > 0; --exp) {
+            result->bits[i] /= 10;
+        }
+    }
+
+    if (get_sign(&value) == NEGATIVE) {
+        result->bits[get_elder_bit_index(&value)] += 1;
+    }
+
+    return OK;
+}
 
 int s21_round(s21_decimal value, s21_decimal *result) { return OK; }
 

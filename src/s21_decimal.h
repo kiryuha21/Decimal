@@ -77,5 +77,6 @@ void swap_decimals(s21_decimal *val1, s21_decimal *val2);
 void reduce_exponent(s21_decimal *val);
 s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,
                            unsigned int bit2, unsigned int bit3);
+int get_elder_bit_index(const s21_decimal* val);
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_H
