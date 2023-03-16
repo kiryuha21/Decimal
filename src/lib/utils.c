@@ -66,9 +66,10 @@ int scal_mul(s21_decimal* val, unsigned int num) {
   return ret;
 }
 
-int add_one_sign_decimals(const s21_decimal* value_1,
-                          const s21_decimal* value_2, s21_decimal* result) {
+int add_same_signs(const s21_decimal* value_1,
+                   const s21_decimal* value_2, s21_decimal* result) {
   int ret = OK;
+    set_sign(result, get_sign(value_1));
   unsigned long long int overflow = 0;
   for (int i = 0; i < 3; ++i) {
     unsigned long long int bit_val = value_1->bits[i] + value_2->bits[i];
@@ -86,24 +87,33 @@ int add_one_sign_decimals(const s21_decimal* value_1,
   return ret;
 }
 
-int sub_diff_sign_decimals(const s21_decimal* value_1,
-                           const s21_decimal* value_2, s21_decimal* result) {
-  // TODO: if value_1 < value_2 then value_1 <=> value_2, sign = -sign
+s21_decimal decimal_abs(s21_decimal val) {
+    s21_decimal res = val;
+    set_sign(&res, POSITIVE);
+    return res;
+}
+
+int sub_diff_signs(s21_decimal value_1,
+                   s21_decimal value_2, s21_decimal* result) {
   int ret = OK;
+  set_sign(result, get_sign(&value_1));
+  if (s21_is_greater_or_equal(decimal_abs(value_1), decimal_abs(value_2)) == FALSE) {
+      swap_decimals(&value_1, &value_2);
+  }
   unsigned long long int overflow = 0;
   unsigned long long int bit_val;
   for (int i = 0; i < 3; ++i) {
-    if (value_1->bits[i] >= value_2->bits[i] + overflow) {
-      bit_val = value_1->bits[i] - value_2->bits[i] - overflow;
+    if (value_1.bits[i] >= value_2.bits[i] + overflow) {
+      bit_val = value_1.bits[i] - value_2.bits[i] - overflow;
       overflow = 0;
     } else {
-      bit_val = MAX_BIT - value_2->bits[i] + value_1->bits[i] - overflow;
+      bit_val = MAX_BIT - value_2.bits[i] + value_1.bits[i] - overflow;
       overflow = 1;
     }
     result->bits[i] = bit_val;
   }
   if (overflow != 0) {
-    ret = TOO_LARGE;  // if used with value_1 < value_2
+    ret = TOO_LARGE;
   }
   return ret;
 }

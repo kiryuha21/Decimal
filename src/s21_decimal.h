@@ -64,10 +64,11 @@ void set_exponent(s21_decimal *val, unsigned int exp);
 int is_zero(const s21_decimal *val);
 void change_sign(s21_decimal *val);
 int scale_decimals(s21_decimal *num1, s21_decimal *num2, unsigned int *scale);
-int add_one_sign_decimals(const s21_decimal *value_1,
-                          const s21_decimal *value_2, s21_decimal *result);
-int sub_diff_sign_decimals(const s21_decimal *value_1,
-                           const s21_decimal *value_2, s21_decimal *result);
+int add_same_signs(const s21_decimal *value_1,
+                   const s21_decimal *value_2, s21_decimal *result);
+s21_decimal decimal_abs(s21_decimal val);
+        int sub_diff_signs(s21_decimal value_1,
+                           s21_decimal value_2, s21_decimal* result);
 int scal_mul(s21_decimal *val, unsigned int num);
 void null_decimal(s21_decimal *val);
 void swap_decimals(s21_decimal *val1, s21_decimal *val2);
