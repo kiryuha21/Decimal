@@ -153,6 +153,7 @@ void swap_decimals(s21_decimal* val1, s21_decimal* val2) {
   *val1 = cp;
 }
 
+// FIXME: not working
 void reduce_exponent(s21_decimal* val) {
   unsigned int exp = get_exponent(val);
   while (is_zero(val) == FALSE && val->bits[0] % 10 == 0) {
