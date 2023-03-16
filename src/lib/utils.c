@@ -47,22 +47,29 @@ int is_zero(const s21_decimal* val) {
   return res;
 }
 
-int scal_mul(s21_decimal* val, unsigned int num) {
+int scal_mul(s21_decimal val, int num, s21_decimal* res) {
+  set_sign(res, get_sign(&val));
+  if (num < 0) {
+    num = -num;
+    change_sign(res);
+  }
+
   int ret = OK;
-  unsigned long long int overflow = 0;
-  for (int i = 0; i < 3; ++i) {
-    unsigned long long int bit_val = val->bits[i] * num + overflow;
-    if (bit_val > MAX_BIT) {
-      val->bits[i] = bit_val % MAX_BIT;
-      overflow = (bit_val - bit_val % MAX_BIT) / MAX_BIT;
-    } else {
-      val->bits[i] *= num;
-      overflow = 0;
+  while (num != 0) {
+    if (num % 2 == 1) {
+      ret = s21_add(*res, val, res);
+      if (ret != OK) {
+        return ret;
+      }
+    }
+
+    ret = left_shift(&val);
+    num /= 2;
+    if (ret != OK) {
+      return ret;
     }
   }
-  if (overflow != 0) {
-    ret = TOO_LARGE;
-  }
+
   return ret;
 }
 
@@ -129,12 +136,12 @@ int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp) {
   if (exp1 > exp2) {
     *exp = exp1;
     for (unsigned int i = exp2; i < exp1 && ret == OK; ++i) {
-      ret = scal_mul(num2, 10);
+      ret = scal_mul(*num2, 10, num2);
     }
   } else {
     *exp = exp2;
     for (unsigned int i = exp1; i < exp2 && ret == OK; ++i) {
-      ret = scal_mul(num1, 10);
+      ret = scal_mul(*num1, 10, num1);
     }
   }
 
@@ -174,13 +181,29 @@ s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,
 }
 
 int get_elder_bit_index(const s21_decimal* val) {
-    if (val->bits[1] == 0) {
-        return 2;
-    }
+  if (val->bits[1] == 0) {
+    return 2;
+  }
 
-    if (val->bits[0] == 0) {
-        return 1;
-    }
+  if (val->bits[0] == 0) {
+    return 1;
+  }
 
-    return 0;
+  return 0;
+}
+
+int left_shift(s21_decimal* val) {
+  reduce_exponent(val);
+  int overflow = get_bit(val->bits[0], SIGN_BIT);
+
+  for (int i = 0; i < 3; ++i) {
+    val->bits[i] = (val->bits[i] << 1) + overflow;
+    overflow = get_bit(val->bits[i], SIGN_BIT);
+  }
+
+  if (overflow != 0) {
+    return TOO_LARGE;
+  }
+
+  return OK;
 }

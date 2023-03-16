@@ -17,4 +17,5 @@ int main() {
   s21_add(b, c, &a);
   a = create_decimal(55, 0, 0, 0x00010000);
   s21_add(a, a, &b);
+  scal_mul(a, 10, &a);
 }
