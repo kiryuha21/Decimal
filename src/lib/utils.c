@@ -63,10 +63,12 @@ int scal_mul(s21_decimal val, int num, s21_decimal* res) {
       }
     }
 
-    ret = left_shift(&val);
     num /= 2;
-    if (ret != OK) {
-      return ret;
+    if (num != 0) {
+      ret = left_shift(&val);
+      if (ret != OK) {
+        return ret;
+      }
     }
   }
 
