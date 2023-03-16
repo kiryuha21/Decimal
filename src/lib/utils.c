@@ -84,6 +84,7 @@ int add_same_signs(const s21_decimal* value_1,
   if (overflow != 0) {
     ret = TOO_LARGE;
   }
+  reduce_exponent(result);
   return ret;
 }
 
@@ -115,6 +116,7 @@ int sub_diff_signs(s21_decimal value_1,
   if (overflow != 0) {
     ret = TOO_LARGE;
   }
+  reduce_exponent(result);
   return ret;
 }
 
@@ -148,4 +150,17 @@ void swap_decimals(s21_decimal* val1, s21_decimal* val2) {
   s21_decimal cp = *val2;
   *val2 = *val1;
   *val1 = cp;
+}
+
+void reduce_exponent(s21_decimal *val) {
+    unsigned int exp = get_exponent(val);
+    while (is_zero(val) == FALSE && val->bits[0] % 10 == 0) {
+        val->bits[0] /= 10;
+        val->bits[0] += val->bits[1] % 10 * MAX_BIT / 10;
+        val->bits[1] /= 10;
+        val->bits[1] += val->bits[2] % 10 * MAX_BIT / 10;
+        val->bits[2] /= 10;
+        ++exp;
+    }
+    set_exponent(val, exp);
 }

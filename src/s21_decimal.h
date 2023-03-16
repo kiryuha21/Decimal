@@ -72,5 +72,6 @@ s21_decimal decimal_abs(s21_decimal val);
 int scal_mul(s21_decimal *val, unsigned int num);
 void null_decimal(s21_decimal *val);
 void swap_decimals(s21_decimal *val1, s21_decimal *val2);
+void reduce_exponent(s21_decimal *val);
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_H
