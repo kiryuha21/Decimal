@@ -69,7 +69,7 @@ void set_exponent(s21_decimal* val, unsigned int exp) {
 
 int is_zero(const s21_decimal* val) {
   int res = FALSE;
-  if (val->bits[0] == 0 && val->bits[1] == 0 && val->bits[3] == 0) {
+  if (val->bits[0] == 0 && val->bits[1] == 0 && val->bits[2] == 0) {
     res = TRUE;
   }
   return res;

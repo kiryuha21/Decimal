@@ -17,9 +17,11 @@ int s21_is_less(s21_decimal first, s21_decimal second) {
     }
   }
 
-  for (int i = 0; i < 3; ++i) {
+  for (int i = 2; i >= 0; --i) {
     if (first.bits[i] < second.bits[i]) {
       return first_sign == POSITIVE ? TRUE : FALSE;
+    } else if (first.bits[i] > second.bits[i]) {
+      return first_sign == POSITIVE ? FALSE : TRUE;
     }
   }
 
@@ -47,9 +49,11 @@ int s21_is_greater(s21_decimal first, s21_decimal second) {
     }
   }
 
-  for (int i = 0; i < 3; ++i) {
+  for (int i = 2; i >= 0; --i) {
     if (first.bits[i] > second.bits[i]) {
       return first_sign == POSITIVE ? TRUE : FALSE;
+    } else if (first.bits[i] < second.bits[i]) {
+      return first_sign == POSITIVE ? FALSE : TRUE;
     }
   }
 
