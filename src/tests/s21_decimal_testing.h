@@ -3,6 +3,17 @@
 
 #include <check.h>
 
+#include "../s21_decimal.h"
+
+#define MAX_DECIMAL   \
+  {                   \
+    { -1, -1, -1, 0 } \
+  }
+#define MIN_DECIMAL           \
+  {                           \
+    { -1, -1, -1, (1 << 31) } \
+  }
+
 #define SUITES_COUNT 4
 
 Suite* get_arithmetics_suite();
