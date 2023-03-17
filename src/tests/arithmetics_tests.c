@@ -23,6 +23,7 @@ START_TEST(add_too_small_inp) {
   ck_assert_int_eq(s21_add(a, b, &c), ERROR);
 }
 END_TEST
+
 // -----------add correct inp-------------
 START_TEST(add_positive_numb) {
   s21_decimal a = {5, 0, 0, 0}, b = {5, 0, 0, 0}, c = DEFAULT_DECIMAL;
@@ -56,6 +57,15 @@ START_TEST(add_negative_numb) {
 
   ck_assert_int_eq(s21_add(a, b, &c), OK);
   ck_assert_uint_eq(c.bits[0], 12);
+}
+END_TEST
+
+START_TEST(add_opposite_numb) {
+  s21_decimal a = {7, 0, 0, 1 << 31}, b = {7, 0, 0, 0}, c = DEFAULT_DECIMAL;
+
+  ck_assert_int_eq(s21_add(a, b, &c), OK);
+  ck_assert_uint_eq(c.bits[0], 0);
+  ck_assert_uint_eq(c.bits[3], 0);
 }
 END_TEST
 
@@ -101,6 +111,61 @@ START_TEST(add_shift_2_to_1_bits) {
 }
 END_TEST
 
+START_TEST(add_positive_fractional_numb) {
+  s21_decimal a = {5, 0, 0, 0}, b = {5, 0, 0, 0}, c = DEFAULT_DECIMAL;
+
+  ck_assert_int_eq(s21_add(a, b, &c), OK);
+  ck_assert_uint_eq(c.bits[0], 10);
+}
+END_TEST
+
+// -----------sub correct inp-----------
+
+START_TEST(sub_first_greater_second) {
+  s21_decimal a = {7, 0, 0, 0}, b = {5, 0, 0, 0}, c = DEFAULT_DECIMAL;
+
+  ck_assert_int_eq(s21_sub(a, b, &c), OK);
+  ck_assert_uint_eq(c.bits[0], 2);
+  ck_assert_uint_eq(c.bits[3], 0);
+}
+END_TEST
+
+START_TEST(sub_first_less_second) {
+  s21_decimal a = {5, 0, 0, 0}, b = {7, 0, 0, 0}, c = DEFAULT_DECIMAL;
+
+  ck_assert_int_eq(s21_sub(a, b, &c), OK);
+  ck_assert_uint_eq(c.bits[0], 2);
+  ck_assert_uint_eq(c.bits[3], 1 << 31);
+}
+END_TEST
+
+START_TEST(sub_first_negative_second_positive) {
+  s21_decimal a = {7, 0, 0, 1 << 31}, b = {5, 0, 0, 0}, c = DEFAULT_DECIMAL;
+
+  ck_assert_int_eq(s21_sub(a, b, &c), OK);
+  ck_assert_uint_eq(c.bits[0], 12);
+  // ck_assert_uint_eq(c.bits[3] && , 1 << 31) don't work
+  ck_assert(c.bits[3] & (1 << 31));
+}
+END_TEST
+
+START_TEST(sub_euqal_negative_number) {
+  s21_decimal a = {7, 0, 0, 1 << 31}, b = {7, 0, 0, 1 << 31},
+              c = DEFAULT_DECIMAL;
+
+  ck_assert_int_eq(s21_sub(a, b, &c), OK);
+  ck_assert_uint_eq(c.bits[0], 0);
+}
+END_TEST
+
+START_TEST(sub_euqal_positive_number) {
+  s21_decimal a = {7, 0, 0, 0}, b = {7, 0, 0, 0}, c = DEFAULT_DECIMAL;
+
+  ck_assert_int_eq(s21_sub(a, b, &c), OK);
+  ck_assert_uint_eq(c.bits[0], 0);
+}
+END_TEST
+
 Suite *get_arithmetics_suite() {
   Suite *s;
   TCase *t_case;
@@ -118,10 +183,19 @@ Suite *get_arithmetics_suite() {
   tcase_add_test(t_case, add_positive_greater_negative_numb);
   tcase_add_test(t_case, add_positive_less_negative_numb);
   tcase_add_test(t_case, add_negative_numb);
+  tcase_add_test(t_case, add_opposite_numb);
   tcase_add_test(t_case, add_shift_0_to_1_bits);
   tcase_add_test(t_case, add_shift_1_to_0_bits);
   tcase_add_test(t_case, add_shift_1_to_2_bits);
   tcase_add_test(t_case, add_shift_2_to_1_bits);
+  suite_add_tcase(s, t_case);
+
+  t_case = tcase_create("Sub correct inp");
+  tcase_add_test(t_case, sub_first_greater_second);
+  tcase_add_test(t_case, sub_first_less_second);
+  tcase_add_test(t_case, sub_first_negative_second_positive);
+  tcase_add_test(t_case, sub_euqal_negative_number);
+  tcase_add_test(t_case, sub_euqal_positive_number);
   suite_add_tcase(s, t_case);
 
   return s;
