@@ -260,7 +260,6 @@ int get_elder_bit_index(const s21_decimal* val) {
 }
 
 int left_shift(s21_decimal* val) {
-  reduce_exponent(val);
   int overflow = get_bit(val->bits[0], SIGN_BIT);
 
   for (int i = 0; i < 3; ++i) {
