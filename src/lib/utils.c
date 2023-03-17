@@ -32,7 +32,7 @@ int get_higher_bit(int val) {
 }
 
 int decimal_size(s21_decimal val) {
-  for (int i = 2; i >= 0; ++i) {
+  for (int i = 2; i >= 0; --i) {
     if (val.bits[i] != 0) {
       return get_higher_bit(val.bits[i]) + BITS_IN_INT * i;
     }
@@ -76,6 +76,7 @@ int is_zero(const s21_decimal* val) {
 }
 
 int scal_mul(s21_decimal val, int num, s21_decimal* res) {
+  null_decimal(res);
   set_sign(res, get_sign(&val));
   if (num < 0) {
     num = -num;
@@ -117,6 +118,7 @@ int scal_div(s21_decimal val, int num, s21_decimal* res, s21_decimal* mod) {
   int ret = OK;
 
   null_decimal(mod);
+  null_decimal(res);
   for (int i = decimal_size(val); i >= 0; --i) {
     ret = left_shift(res);
     if (ret != OK) {
@@ -227,13 +229,13 @@ void reduce_exponent(s21_decimal* val) {
   s21_decimal reduced = *val, mod = DEFAULT_DECIMAL;
 
   while (exp > 0 && is_zero(&mod) == TRUE && is_zero(&reduced) == FALSE) {
-    --exp;
     int ret = scal_div(reduced, 10, &reduced, &mod);
     if (ret != OK) {
       return;
     }
     if (is_zero(&mod)) {
       *val = reduced;
+      --exp;
     }
   }
 

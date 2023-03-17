@@ -7,7 +7,7 @@ int main() {
   s21_decimal a = DEFAULT_DECIMAL, b = {{1, 2, 3, 0x00A10000}},
               c = {{3, 2, 1, 0x00A00000}};
   float f;
-    s21_from_decimal_to_float(a, &f);
+  s21_from_decimal_to_float(a, &f);
   set_sign(&a, NEGATIVE);
   printf("%s\n", get_sign(&a) == POSITIVE ? "pos" : "neg");
   set_sign(&a, POSITIVE);
