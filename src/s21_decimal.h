@@ -1,6 +1,7 @@
 #ifndef C5_S21_DECIMAL_0_S21_DECIMAL_H
 #define C5_S21_DECIMAL_0_S21_DECIMAL_H
 
+#define BITS_IN_INT 32
 #define MAX_BIT 0xFFFFFFFF
 #define MIN_BIT 0
 #define SIGN_BIT 31
@@ -58,20 +59,25 @@ int s21_is_not_equal(s21_decimal, s21_decimal);
 
 // utils
 int get_bit(unsigned int val, int index);
+int get_decimal_bit(const s21_decimal* val, int index);
 void set_bit(unsigned int *val, int index, int bit);
+void set_decimal_bit(s21_decimal* val, int index, int bit);
+int get_higher_bit(int val);
+int decimal_size(s21_decimal val);
 int get_sign(const s21_decimal *val);
 void set_sign(s21_decimal *val, int sign);
+void change_sign(s21_decimal* val);
 unsigned int get_exponent(const s21_decimal *val);
 void set_exponent(s21_decimal *val, unsigned int exp);
 int is_zero(const s21_decimal *val);
-void change_sign(s21_decimal *val);
-int scale_decimals(s21_decimal *num1, s21_decimal *num2, unsigned int *scale);
+int scal_mul(s21_decimal val, int num, s21_decimal *res);
+int scal_div(s21_decimal val, int num, s21_decimal *res, s21_decimal *mod);
 int add_same_signs(const s21_decimal *value_1, const s21_decimal *value_2,
                    s21_decimal *result);
 s21_decimal decimal_abs(s21_decimal val);
 int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
                    s21_decimal *result);
-int scal_mul(s21_decimal val, int num, s21_decimal *res);
+int scale_decimals(s21_decimal *num1, s21_decimal *num2, unsigned int *scale);
 void null_decimal(s21_decimal *val);
 void swap_decimals(s21_decimal *val1, s21_decimal *val2);
 void reduce_exponent(s21_decimal *val);
