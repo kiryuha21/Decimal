@@ -1,6 +1,10 @@
 #include "../s21_decimal.h"
 
 int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+  if (!result) {
+    return ERROR;
+  }
+
   null_decimal(result);
   unsigned int scale;
   if (scale_decimals(&value_1, &value_2, &scale) != OK) {
