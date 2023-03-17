@@ -2,7 +2,7 @@
 #define C5_S21_DECIMAL_0_S21_DECIMAL_H
 
 #define BITS_IN_INT 32
-#define MAX_BIT 0xFFFFFFFF
+#define OVERFLOW_BIT (unsigned long long)(0x100000000)
 #define MIN_BIT 0
 #define SIGN_BIT 31
 #define NEGATIVE 1

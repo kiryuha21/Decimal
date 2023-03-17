@@ -147,10 +147,10 @@ int add_same_signs(const s21_decimal* value_1, const s21_decimal* value_2,
   set_sign(result, get_sign(value_1));
   unsigned long long int overflow = 0;
   for (int i = 0; i < 3; ++i) {
-    unsigned long long bit_val = value_1->bits[i];
-    bit_val += value_2->bits[i] + overflow;
-    result->bits[i] = bit_val % MAX_BIT;
-    overflow = bit_val / MAX_BIT;
+    unsigned long long bit_val =
+        (unsigned long long)value_1->bits[i] + value_2->bits[i] + overflow;
+    result->bits[i] = bit_val % OVERFLOW_BIT;
+    overflow = bit_val / OVERFLOW_BIT;
   }
   if (overflow != 0) {
     ret = TOO_LARGE;
@@ -180,7 +180,7 @@ int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
       bit_val = value_1.bits[i] - value_2.bits[i] - overflow;
       overflow = 0;
     } else {
-      bit_val = MAX_BIT - value_2.bits[i] + value_1.bits[i] - overflow;
+      bit_val = OVERFLOW_BIT - value_2.bits[i] + value_1.bits[i] - overflow;
       overflow = 1;
     }
     result->bits[i] = bit_val;
