@@ -147,8 +147,8 @@ int add_same_signs(const s21_decimal* value_1, const s21_decimal* value_2,
   set_sign(result, get_sign(value_1));
   unsigned long long int overflow = 0;
   for (int i = 0; i < 3; ++i) {
-    unsigned long long int bit_val =
-        value_1->bits[i] + value_2->bits[i] + overflow;
+    unsigned long long bit_val = value_1->bits[i];
+    bit_val += value_2->bits[i] + overflow;
     result->bits[i] = bit_val % MAX_BIT;
     overflow = bit_val / MAX_BIT;
   }

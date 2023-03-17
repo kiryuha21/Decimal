@@ -20,4 +20,9 @@ int main() {
   a = create_decimal(55, 0, 0, 0x00010000);
   s21_add(a, a, &b);
   scal_mul(a, 10, &a);
+  a = create_decimal(1 << 31, 0, 0, 0);
+  s21_add(a, a, &b);
+  a = create_decimal(1 << 31, 0, 0, 0);
+  c = create_decimal((1 << 31) - 5, 0, 0, 0);
+  s21_sub(a, c, &b);
 }
