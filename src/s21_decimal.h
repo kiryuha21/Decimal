@@ -59,14 +59,14 @@ int s21_is_not_equal(s21_decimal, s21_decimal);
 
 // utils
 int get_bit(unsigned int val, int index);
-int get_decimal_bit(const s21_decimal* val, int index);
+int get_decimal_bit(const s21_decimal *val, int index);
 void set_bit(unsigned int *val, int index, int bit);
-void set_decimal_bit(s21_decimal* val, int index, int bit);
+void set_decimal_bit(s21_decimal *val, int index, int bit);
 int get_higher_bit(int val);
 int decimal_size(s21_decimal val);
 int get_sign(const s21_decimal *val);
 void set_sign(s21_decimal *val, int sign);
-void change_sign(s21_decimal* val);
+void change_sign(s21_decimal *val);
 unsigned int get_exponent(const s21_decimal *val);
 void set_exponent(s21_decimal *val, unsigned int exp);
 int is_zero(const s21_decimal *val);

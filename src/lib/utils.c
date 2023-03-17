@@ -21,23 +21,23 @@ void set_decimal_bit(s21_decimal* val, int index, int bit) {
 }
 
 int get_higher_bit(int val) {
-    int res = -1;
-    for (int i = 0; val != 0; ++i) {
-        if ((val & 1) == 1) {
-            res = i;
-        }
-        val = val >> 1;
+  int res = -1;
+  for (int i = 0; val != 0; ++i) {
+    if ((val & 1) == 1) {
+      res = i;
     }
-    return res;
+    val = val >> 1;
+  }
+  return res;
 }
 
 int decimal_size(s21_decimal val) {
-    for (int i = 2; i >= 0; ++i) {
-        if (val.bits[i] != 0) {
-            return get_higher_bit(val.bits[i]) + BITS_IN_INT * i;
-        }
+  for (int i = 2; i >= 0; ++i) {
+    if (val.bits[i] != 0) {
+      return get_higher_bit(val.bits[i]) + BITS_IN_INT * i;
     }
-    return 0;
+  }
+  return 0;
 }
 
 int get_sign(const s21_decimal* val) {
