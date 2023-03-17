@@ -16,7 +16,7 @@ int s21_from_int_to_decimal(int src, s21_decimal *dst) {
 }
 
 int s21_from_float_to_decimal(float src, s21_decimal *dst) {
-  if (src < 1e-28) {
+  if (fabsf(src) < 1e-28) {
     null_decimal(dst);
     return ERROR;
   }
@@ -33,13 +33,12 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
 
   int integer_part = (int)src;
   int significant_digits = 0;
-  for (; integer_part > 0; integer_part /= 10, ++significant_digits)
-    ;
+  for (; integer_part > 0; integer_part /= 10, ++significant_digits) {}
 
   int exp = 7 - significant_digits;
   set_exponent(dst, exp);
 
-  dst->bits[2] = (unsigned int)powf(10, (float)exp);
+  dst->bits[2] = (unsigned int)(src * powf(10, (float)exp));
 
   return OK;
 }
@@ -77,7 +76,10 @@ int s21_from_decimal_to_float(s21_decimal src, float *dst) {
 
   unsigned int exp = get_exponent(&src);
   float power = powf(10, (float)exp);
-  float_part = (float)(src.bits[2] % (int)power) * powf(0.1F, power);
+  float_part = (float)(src.bits[2] % (int)power) * powf(0.1F, (float)exp);
+  if (get_sign(&src) == NEGATIVE) {
+      float_part = -float_part;
+  }
 
   *dst = (float)int_part + float_part;
   return OK;
