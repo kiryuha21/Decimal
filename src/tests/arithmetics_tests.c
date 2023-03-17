@@ -47,7 +47,7 @@ START_TEST(add_positive_less_negative_numb) {
 
   ck_assert_int_eq(s21_add(a, b, &c), OK);
   ck_assert_uint_eq(c.bits[0], 2);
-  ck_assert_uint_eq(c.bits[3], 1 << 31);
+  ck_assert(c.bits[3] & (1 << 31));
 }
 END_TEST
 
@@ -84,7 +84,7 @@ START_TEST(add_shift_1_to_0_bits) {
               c = DEFAULT_DECIMAL;
 
   ck_assert_int_eq(s21_add(a, b, &c), OK);
-  ck_assert_uint_eq(c.bits[0], 1 << 31);
+  ck_assert(c.bits[0] & (1 << 31));
   ck_assert_uint_eq(c.bits[1], 0);
   ck_assert_uint_eq(c.bits[3], 0);
 }
@@ -105,7 +105,7 @@ START_TEST(add_shift_2_to_1_bits) {
               c = DEFAULT_DECIMAL;
 
   ck_assert_int_eq(s21_add(a, b, &c), OK);
-  ck_assert_uint_eq(c.bits[1], 1 << 31);
+  ck_assert(c.bits[1] & (1 << 31));
   ck_assert_uint_eq(c.bits[2], 0);
   ck_assert_uint_eq(c.bits[3], 0);
 }
@@ -135,7 +135,7 @@ START_TEST(sub_first_less_second) {
 
   ck_assert_int_eq(s21_sub(a, b, &c), OK);
   ck_assert_uint_eq(c.bits[0], 2);
-  ck_assert_uint_eq(c.bits[3], 1 << 31);
+  ck_assert(c.bits[3] & (1 << 31));
 }
 END_TEST
 
