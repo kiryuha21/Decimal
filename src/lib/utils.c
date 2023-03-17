@@ -145,14 +145,10 @@ int add_same_signs(const s21_decimal* value_1, const s21_decimal* value_2,
   set_sign(result, get_sign(value_1));
   unsigned long long int overflow = 0;
   for (int i = 0; i < 3; ++i) {
-    unsigned long long int bit_val = value_1->bits[i] + value_2->bits[i];
-    if (bit_val > MAX_BIT) {
-      result->bits[i] = bit_val % MAX_BIT;
-      overflow = 1;
-    } else {
-      result->bits[i] = bit_val;
-      overflow = 0;
-    }
+    unsigned long long int bit_val =
+        value_1->bits[i] + value_2->bits[i] + overflow;
+    result->bits[i] = bit_val % MAX_BIT;
+    overflow = bit_val / MAX_BIT;
   }
   if (overflow != 0) {
     ret = TOO_LARGE;
@@ -230,7 +226,7 @@ void reduce_exponent(s21_decimal* val) {
   unsigned int exp = get_exponent(val);
   s21_decimal reduced = *val, mod = DEFAULT_DECIMAL;
 
-  while (exp > 0 && is_zero(&mod) == TRUE) {
+  while (exp > 0 && is_zero(&mod) == TRUE && is_zero(&reduced) == FALSE) {
     --exp;
     int ret = scal_div(reduced, 10, &reduced, &mod);
     if (ret != OK) {
