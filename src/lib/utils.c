@@ -172,6 +172,7 @@ int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
   if (s21_is_greater_or_equal(decimal_abs(value_1), decimal_abs(value_2)) ==
       FALSE) {
     swap_decimals(&value_1, &value_2);
+    change_sign(result);
   }
   unsigned long long int overflow = 0;
   unsigned long long int bit_val;
@@ -237,6 +238,10 @@ void reduce_exponent(s21_decimal* val) {
       *val = reduced;
       --exp;
     }
+  }
+
+  if (is_zero(val) == TRUE) {
+    set_sign(val, POSITIVE);
   }
 
   set_exponent(val, exp);
