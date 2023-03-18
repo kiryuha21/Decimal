@@ -170,6 +170,15 @@ START_TEST(sub_euqal_positive_number) {
 }
 END_TEST
 
+START_TEST(sub_with_mantissa_overflow) {
+  s21_decimal a = {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0},
+              b = {6, 0, 0, 0x00010000}, c = DEFAULT_DECIMAL;
+
+  ck_assert_int_eq(s21_sub(a, b, &c), OK);
+  ck_assert_uint_eq(c.bits[0], 0);
+}
+END_TEST
+
 Suite *get_arithmetics_suite() {
   Suite *s;
   TCase *t_case;
@@ -200,6 +209,8 @@ Suite *get_arithmetics_suite() {
   tcase_add_test(t_case, sub_first_negative_second_positive);
   tcase_add_test(t_case, sub_euqal_negative_number);
   tcase_add_test(t_case, sub_euqal_positive_number);
+  tcase_add_test(t_case, sub_with_mantissa_overflow);
+
   suite_add_tcase(s, t_case);
 
   return s;
