@@ -2,7 +2,7 @@
 cmake-build-debug
 CMakeLists.txt
 .idea
-.gc*
+********.gc*
 
 # Prerequisites
 *.d
