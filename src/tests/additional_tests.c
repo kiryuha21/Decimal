@@ -1295,7 +1295,7 @@ START_TEST(verter_negate_3) {
   s21_decimal x = {{0, 0, 0, 917504}};
   s21_decimal z = {{0, 0, 0, 0}};
   s21_negate(x, &z);
-  char ourRes[1000], expect[1000] = "0 0 0 2148401152";
+  char ourRes[1000], expect[1000] = "0 0 0 917504";
   snprintf(ourRes, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
            z.bits[2], z.bits[3]);
   ck_assert_str_eq(ourRes, expect);
