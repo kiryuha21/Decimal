@@ -64,7 +64,7 @@ unsigned int get_exponent(const s21_decimal* val) {
 
 void set_exponent(s21_decimal* val, unsigned int exp) {
   for (int i = 0; i < 8 && exp > 0; ++i) {
-    set_bit(&val->bits[3], 16 + i, (int)(exp % 2));
+    set_decimal_bit(val, 16 + i + 64, (int)(exp % 2));
     exp /= 2;
   }
 }
@@ -80,6 +80,7 @@ int is_zero(const s21_decimal* val) {
 int scal_mul(s21_decimal val, int num, s21_decimal* res) {
   null_decimal(res);
   set_sign(res, get_sign(&val));
+  set_exponent(res, get_exponent(&val));
   if (num < 0) {
     num = -num;
     change_sign(res);
@@ -106,12 +107,39 @@ int scal_mul(s21_decimal val, int num, s21_decimal* res) {
   return ret;
 }
 
+int mul_without_signs(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
+  null_decimal(res);
+
+  int ret = OK;
+  while (is_zero(&val2) == FALSE) {
+    int mod = 0;
+    right_shift(&val2, &mod);
+    if (mod == 1) {
+      ret = s21_add(*res, val1, res);
+      if (ret != OK) {
+        return ret;
+      }
+    }
+
+    if (is_zero(&val2) == FALSE) {
+      ret = left_shift(&val1);
+      if (ret != OK) {
+        return ret;
+      }
+    }
+  }
+
+  return ret;
+}
+
 int scal_div(s21_decimal val, int num, s21_decimal* res, s21_decimal* mod) {
   if (num == 0) {
     return ZERO_DIVISION;
   }
 
+  null_decimal(res);
   set_sign(res, get_sign(&val));
+  set_exponent(res, get_exponent(&val));
   if (num < 0) {
     num = -num;
     change_sign(res);
@@ -269,11 +297,11 @@ int get_elder_bit_index(const s21_decimal* val) {
 }
 
 int left_shift(s21_decimal* val) {
-  int overflow = get_bit(val->bits[0], SIGN_BIT);
+  int overflow = get_decimal_bit(val, (BITS_IN_INT - 1));
 
   for (int i = 0; i < 3; ++i) {
     val->bits[i] = (val->bits[i] << 1) + overflow;
-    overflow = get_bit(val->bits[i], SIGN_BIT);
+    overflow = get_decimal_bit(val, (BITS_IN_INT - 1) + i * BITS_IN_INT);
   }
 
   if (overflow != 0) {
@@ -283,9 +311,22 @@ int left_shift(s21_decimal* val) {
   return OK;
 }
 
+int right_shift(s21_decimal* val, int* mod) {
+  int overflow = 0, next_overflow;
+
+  for (int i = 2; i >= 0; --i) {
+    next_overflow = get_decimal_bit(val, i * BITS_IN_INT);
+    val->bits[i] = (val->bits[i] >> 1) + (overflow * OVERFLOW_BIT);
+    overflow = next_overflow;
+  }
+
+  *mod = overflow;
+
+  return OK;
+}
+
 void print_decimal(const s21_decimal* val) {
-  printf(
-      "\nsign = %s\nexp = %ui\nbit[2] - %.8X\nbit[1] - %.8X\nbit[0] - %.8X\n",
-      get_sign(val) == POSITIVE ? "POSITIVE" : "NEGATIVE", get_exponent(val),
-      val->bits[2], val->bits[1], val->bits[0]);
+  printf("\nsign = %s\nexp = %u\nbit[2] - %.8X\nbit[1] - %.8X\nbit[0] - %.8X\n",
+         get_sign(val) == POSITIVE ? "POSITIVE" : "NEGATIVE", get_exponent(val),
+         val->bits[2], val->bits[1], val->bits[0]);
 }

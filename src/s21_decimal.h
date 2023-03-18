@@ -71,6 +71,7 @@ unsigned int get_exponent(const s21_decimal *val);
 void set_exponent(s21_decimal *val, unsigned int exp);
 int is_zero(const s21_decimal *val);
 int scal_mul(s21_decimal val, int num, s21_decimal *res);
+int mul_without_signs(s21_decimal val1, s21_decimal val2, s21_decimal *res);
 int scal_div(s21_decimal val, int num, s21_decimal *res, s21_decimal *mod);
 int add_same_signs(const s21_decimal *value_1, const s21_decimal *value_2,
                    s21_decimal *result);
@@ -85,6 +86,7 @@ s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,
                            unsigned int bit2, unsigned int bit3);
 int get_elder_bit_index(const s21_decimal *val);
 int left_shift(s21_decimal *val);
+int right_shift(s21_decimal *val, int *mod);
 void print_decimal(const s21_decimal *val);
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_H

@@ -27,6 +27,30 @@ int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 }
 
 int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
+  if (!result) {
+    return ERROR;
+  }
+
+  unsigned int scale;
+  null_decimal(result);
+  if (scale_decimals(&value_1, &value_2, &scale) != OK) {
+    return TOO_LARGE;
+  }
+
+  set_exponent(result, scale);
+  int ret = mul_without_signs(value_1, value_2, result);
+  if (ret != OK) {
+    return ret;
+  }
+  int first_sign = get_sign(&value_1), second_sign = get_sign(&value_2);
+  if (first_sign != second_sign) {
+    set_sign(result, NEGATIVE);
+  } else {
+    set_sign(result, POSITIVE);
+  }
+
+  reduce_exponent(result);
+
   return OK;
 }
 
