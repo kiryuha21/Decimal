@@ -23,13 +23,13 @@ LIB = s21_decimal.a
 
 REPORT_DIR = report
 
+all: clean test gcov_report $(LIB)
+
 apply_clang: 
 	cp ../materials/linters/.clang-format .
 	clang-format -i *.[ch]
 	clang-format -i */*.[ch]
 	rm -f .clang-format
-
-all: clean gcov_report $(LIB) test
 
 test: apply_clang $(SRC_C_FILES) $(SRC_H_FILES)
 	$(CC) $(FLAGS) $(SRC_C_FILES) $(SRC_H_FILES) $(TEST_C_FILES) $(TEST_H_FILES) -o $(TEST_TARGET) $(ADDITIONAL_FLAGS)
@@ -51,6 +51,9 @@ $(LIB): apply_clang
 	ar rcv $(LIB) *.o
 	ranlib $(LIB)
 	rm *.o
+
+cppcheck:
+	cppcheck --enable=all --suppress=missingIncludeSystem .
 
 clean_test:
 	rm -f $(TEST_TARGET)

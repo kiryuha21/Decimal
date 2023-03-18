@@ -3,7 +3,7 @@
 #include "../s21_decimal.h"
 
 int get_bit(unsigned int val, int index) {
-  return (val & (1 << index)) ? 1 : 0;
+  return (val & ((unsigned int)1 << index)) ? 1 : 0;
 }
 
 int get_decimal_bit(const s21_decimal* val, int index) {
@@ -284,7 +284,8 @@ int left_shift(s21_decimal* val) {
 }
 
 void print_decimal(const s21_decimal* val) {
-  printf("\nsign = %s\nexp = %i\nbit[2] - %.8X\nbit[1] - %.8X\nbit[0] - %.8X\n",
-         get_sign(val) == POSITIVE ? "POSITIVE" : "NEGATIVE", get_exponent(val),
-         val->bits[2], val->bits[1], val->bits[0]);
+  printf(
+      "\nsign = %s\nexp = %ui\nbit[2] - %.8X\nbit[1] - %.8X\nbit[0] - %.8X\n",
+      get_sign(val) == POSITIVE ? "POSITIVE" : "NEGATIVE", get_exponent(val),
+      val->bits[2], val->bits[1], val->bits[0]);
 }
