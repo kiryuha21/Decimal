@@ -20,5 +20,6 @@ Suite* get_arithmetics_suite();
 Suite* get_comparisons_suite();
 Suite* get_conversions_suite();
 Suite* get_extras_suite();
+Suite* suite_s21_add();
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_TESTING_H

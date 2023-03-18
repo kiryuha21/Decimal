@@ -1,6 +1,6 @@
-#include "../s21_decimal.h"
-
 #include <math.h>
+
+#include "../s21_decimal.h"
 
 int s21_floor(s21_decimal value, s21_decimal *result) {
   *result = value;
@@ -16,16 +16,15 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
 }
 
 int s21_round(s21_decimal value, s21_decimal *result) {
-    reduce_exponent(&value);
+  reduce_exponent(&value);
 
-    int exp = (int) get_exponent(&value);
-    int first_integer_bit_ind = get_first_integer_bit_index(&value);
-    for (int i = first_integer_bit_ind; i <= 2; ++i) {
-        unsigned int mod = (unsigned int) pow(10.0, (double) (exp % 10));
-        for (; mod > 0; mod /= 10) {
-
-        }
+  int exp = (int)get_exponent(&value);
+  int first_integer_bit_ind = get_first_integer_bit_index(&value);
+  for (int i = first_integer_bit_ind; i <= 2; ++i) {
+    unsigned int mod = (unsigned int)pow(10.0, (double)(exp % 10));
+    for (; mod > 0; mod /= 10) {
     }
+  }
 }
 
 int s21_truncate(s21_decimal value, s21_decimal *result) {

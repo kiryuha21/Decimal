@@ -301,16 +301,16 @@ int get_elder_bit_index(const s21_decimal* val) {
 }
 
 int get_first_integer_bit_index(const s21_decimal* val) {
-    int exp = (int) get_exponent(val);
-    if (exp < 10) {
-        return 0;
-    }
+  int exp = (int)get_exponent(val);
+  if (exp < 10) {
+    return 0;
+  }
 
-    if (exp < 20) {
-        return 1;
-    }
+  if (exp < 20) {
+    return 1;
+  }
 
-    return 2;
+  return 2;
 }
 
 int left_shift(s21_decimal* val) {
