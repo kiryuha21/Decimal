@@ -301,16 +301,16 @@ int get_elder_bit_index(const s21_decimal* val) {
 }
 
 int get_first_integer_bit_index(const s21_decimal* val) {
-    int exp = (int) get_exponent(val);
-    if (exp < 10) {
-        return 0;
-    }
+  int exp = (int)get_exponent(val);
+  if (exp < 10) {
+    return 0;
+  }
 
-    if (exp < 20) {
-        return 1;
-    }
+  if (exp < 20) {
+    return 1;
+  }
 
-    return 2;
+  return 2;
 }
 
 int left_shift(s21_decimal* val) {
@@ -342,6 +342,21 @@ int right_shift(s21_decimal* val, int* mod) {
   *mod = overflow;
 
   return OK;
+}
+
+void handle_decimal_inc(s21_decimal* val) {
+  val->bits[0] += 1;
+  if (val->bits[0] != 0) {
+    return;
+  }
+
+  val->bits[1] += 1;
+  if (val->bits[1] != 0) {
+    return;
+  }
+
+  val->bits[2] += 1;
+  return;
 }
 
 void print_decimal(const s21_decimal* val) {
