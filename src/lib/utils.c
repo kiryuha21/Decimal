@@ -281,11 +281,13 @@ int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp) {
 
   if (exp1 > exp2) {
     *exp = exp1;
+    set_exponent(num2, *exp);
     for (unsigned int i = exp2; i < exp1 && ret == OK; ++i) {
       ret = pure_mul(*num2, 10, num2);
     }
   } else {
     *exp = exp2;
+    set_exponent(num1, *exp);
     for (unsigned int i = exp1; i < exp2 && ret == OK; ++i) {
       ret = pure_mul(*num1, 10, num1);
     }
