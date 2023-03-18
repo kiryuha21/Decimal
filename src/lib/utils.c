@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "../s21_decimal.h"
 
 int get_bit(unsigned int val, int index) {
@@ -279,4 +281,10 @@ int left_shift(s21_decimal* val) {
   }
 
   return OK;
+}
+
+void print_decimal(const s21_decimal* val) {
+  printf("\nsign = %s\nexp = %i\nbit[2] - %.8X\nbit[1] - %.8X\nbit[0] - %.8X\n",
+         get_sign(val) == POSITIVE ? "POSITIVE" : "NEGATIVE", get_exponent(val),
+         val->bits[2], val->bits[1], val->bits[0]);
 }

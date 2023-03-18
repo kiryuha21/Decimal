@@ -34,7 +34,8 @@ START_TEST(add_positive_numb) {
 END_TEST
 
 START_TEST(add_positive_greater_negative_numb) {
-  s21_decimal a = {7, 0, 0, 0}, b = {5, 0, 0, 1 << 31}, c = DEFAULT_DECIMAL;
+  s21_decimal a = {7, 0, 0, 0}, b = {5, 0, 0, NEGATIVE_DECIMAL},
+              c = DEFAULT_DECIMAL;
 
   ck_assert_int_eq(s21_add(a, b, &c), OK);
   ck_assert_uint_eq(c.bits[0], 2);
@@ -43,16 +44,17 @@ START_TEST(add_positive_greater_negative_numb) {
 END_TEST
 
 START_TEST(add_positive_less_negative_numb) {
-  s21_decimal a = {5, 0, 0, 0}, b = {7, 0, 0, 1 << 31}, c = DEFAULT_DECIMAL;
+  s21_decimal a = {5, 0, 0, 0}, b = {7, 0, 0, NEGATIVE_DECIMAL},
+              c = DEFAULT_DECIMAL;
 
   ck_assert_int_eq(s21_add(a, b, &c), OK);
   ck_assert_uint_eq(c.bits[0], 2);
-  ck_assert(c.bits[3] & (1 << 31));
+  ck_assert(c.bits[3] & (NEGATIVE_DECIMAL));
 }
 END_TEST
 
 START_TEST(add_negative_numb) {
-  s21_decimal a = {7, 0, 0, 1 << 31}, b = {5, 0, 0, 1 << 31},
+  s21_decimal a = {7, 0, 0, NEGATIVE_DECIMAL}, b = {5, 0, 0, NEGATIVE_DECIMAL},
               c = DEFAULT_DECIMAL;
 
   ck_assert_int_eq(s21_add(a, b, &c), OK);
@@ -61,7 +63,8 @@ START_TEST(add_negative_numb) {
 END_TEST
 
 START_TEST(add_opposite_numb) {
-  s21_decimal a = {7, 0, 0, 1 << 31}, b = {7, 0, 0, 0}, c = DEFAULT_DECIMAL;
+  s21_decimal a = {7, 0, 0, NEGATIVE_DECIMAL}, b = {7, 0, 0, 0},
+              c = DEFAULT_DECIMAL;
 
   ck_assert_int_eq(s21_add(a, b, &c), OK);
   ck_assert_uint_eq(c.bits[0], 0);
@@ -70,7 +73,7 @@ START_TEST(add_opposite_numb) {
 END_TEST
 
 START_TEST(add_shift_0_to_1_bits) {
-  s21_decimal a = {1 << 31, 0, 0, 0}, b = {1 << 31, 0, 0, 0},
+  s21_decimal a = {NEGATIVE_DECIMAL, 0, 0, 0}, b = {NEGATIVE_DECIMAL, 0, 0, 0},
               c = DEFAULT_DECIMAL;
 
   ck_assert_int_eq(s21_add(a, b, &c), OK);
@@ -80,18 +83,18 @@ START_TEST(add_shift_0_to_1_bits) {
 END_TEST
 
 START_TEST(add_shift_1_to_0_bits) {
-  s21_decimal a = {0, 1, 0, 0}, b = {1 << 31, 0, 0, 1 << 31},
+  s21_decimal a = {0, 1, 0, 0}, b = {NEGATIVE_DECIMAL, 0, 0, NEGATIVE_DECIMAL},
               c = DEFAULT_DECIMAL;
 
   ck_assert_int_eq(s21_add(a, b, &c), OK);
-  ck_assert(c.bits[0] & (1 << 31));
+  ck_assert(c.bits[0] & (NEGATIVE_DECIMAL));
   ck_assert_uint_eq(c.bits[1], 0);
   ck_assert_uint_eq(c.bits[3], 0);
 }
 END_TEST
 
 START_TEST(add_shift_1_to_2_bits) {
-  s21_decimal a = {0, 1 << 31, 0, 0}, b = {0, 1 << 31, 0, 0},
+  s21_decimal a = {0, NEGATIVE_DECIMAL, 0, 0}, b = {0, NEGATIVE_DECIMAL, 0, 0},
               c = DEFAULT_DECIMAL;
 
   ck_assert_int_eq(s21_add(a, b, &c), OK);
@@ -101,11 +104,11 @@ START_TEST(add_shift_1_to_2_bits) {
 END_TEST
 
 START_TEST(add_shift_2_to_1_bits) {
-  s21_decimal a = {0, 0, 1, 0}, b = {0, 1 << 31, 0, 1 << 31},
+  s21_decimal a = {0, 0, 1, 0}, b = {0, NEGATIVE_DECIMAL, 0, NEGATIVE_DECIMAL},
               c = DEFAULT_DECIMAL;
 
   ck_assert_int_eq(s21_add(a, b, &c), OK);
-  ck_assert(c.bits[1] & (1 << 31));
+  ck_assert(c.bits[1] & (NEGATIVE_DECIMAL));
   ck_assert_uint_eq(c.bits[2], 0);
   ck_assert_uint_eq(c.bits[3], 0);
 }
@@ -135,22 +138,23 @@ START_TEST(sub_first_less_second) {
 
   ck_assert_int_eq(s21_sub(a, b, &c), OK);
   ck_assert_uint_eq(c.bits[0], 2);
-  ck_assert(c.bits[3] & (1 << 31));
+  ck_assert(c.bits[3] & (NEGATIVE_DECIMAL));
 }
 END_TEST
 
 START_TEST(sub_first_negative_second_positive) {
-  s21_decimal a = {7, 0, 0, 1 << 31}, b = {5, 0, 0, 0}, c = DEFAULT_DECIMAL;
+  s21_decimal a = {7, 0, 0, NEGATIVE_DECIMAL}, b = {5, 0, 0, 0},
+              c = DEFAULT_DECIMAL;
 
   ck_assert_int_eq(s21_sub(a, b, &c), OK);
   ck_assert_uint_eq(c.bits[0], 12);
-  // ck_assert_uint_eq(c.bits[3] && , 1 << 31) don't work
-  ck_assert(c.bits[3] & (1 << 31));
+  // ck_assert_uint_eq(c.bits[3] && , NEGATIVE_DECIMAL) don't work
+  ck_assert(c.bits[3] & (NEGATIVE_DECIMAL));
 }
 END_TEST
 
 START_TEST(sub_euqal_negative_number) {
-  s21_decimal a = {7, 0, 0, 1 << 31}, b = {7, 0, 0, 1 << 31},
+  s21_decimal a = {7, 0, 0, NEGATIVE_DECIMAL}, b = {7, 0, 0, NEGATIVE_DECIMAL},
               c = DEFAULT_DECIMAL;
 
   ck_assert_int_eq(s21_sub(a, b, &c), OK);

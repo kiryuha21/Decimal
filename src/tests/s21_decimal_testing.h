@@ -9,9 +9,9 @@
   {                   \
     { -1, -1, -1, 0 } \
   }
-#define MIN_DECIMAL           \
-  {                           \
-    { -1, -1, -1, (1 << 31) } \
+#define MIN_DECIMAL                    \
+  {                                    \
+    { -1, -1, -1, (NEGATIVE_DECIMAL) } \
   }
 
 #define SUITES_COUNT 4
