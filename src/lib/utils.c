@@ -290,14 +290,27 @@ s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,
 
 int get_elder_bit_index(const s21_decimal* val) {
   if (val->bits[1] == 0) {
-    return 2;
+    return 0;
   }
 
-  if (val->bits[0] == 0) {
+  if (val->bits[2] == 0) {
     return 1;
   }
 
-  return 0;
+  return 2;
+}
+
+int get_first_integer_bit_index(const s21_decimal* val) {
+    int exp = (int) get_exponent(val);
+    if (exp < 10) {
+        return 0;
+    }
+
+    if (exp < 20) {
+        return 1;
+    }
+
+    return 2;
 }
 
 int left_shift(s21_decimal* val) {

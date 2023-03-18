@@ -85,6 +85,7 @@ void reduce_exponent(s21_decimal *val);
 s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,
                            unsigned int bit2, unsigned int bit3);
 int get_elder_bit_index(const s21_decimal *val);
+int get_first_integer_bit_index(const s21_decimal* val);
 int left_shift(s21_decimal *val);
 int right_shift(s21_decimal *val, int *mod);
 void print_decimal(const s21_decimal *val);
