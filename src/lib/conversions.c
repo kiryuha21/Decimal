@@ -1,11 +1,15 @@
 #include <limits.h>
 #include <math.h>
+#include <stdio.h>
 
 #include "../s21_decimal.h"
 
 int s21_from_int_to_decimal(int src, s21_decimal *dst) {
-  null_decimal(dst);
+  if (dst == NULL) {
+    return ERROR;
+  }
 
+  null_decimal(dst);
   if (src < 0) {
     set_sign(dst, NEGATIVE);
     src = -src;
@@ -16,6 +20,10 @@ int s21_from_int_to_decimal(int src, s21_decimal *dst) {
 }
 
 int s21_from_float_to_decimal(float src, s21_decimal *dst) {
+  if (dst == NULL) {
+    return ERROR;
+  }
+
   if (fabsf(src) < 1e-28) {
     null_decimal(dst);
     return ERROR;
@@ -45,6 +53,10 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
 }
 
 int s21_from_decimal_to_int(s21_decimal src, int *dst) {
+  if (dst == NULL) {
+    return ERROR;
+  }
+
   s21_decimal integer_src;
   s21_truncate(src, &integer_src);
   reduce_exponent(&src);
@@ -66,6 +78,10 @@ int s21_from_decimal_to_int(s21_decimal src, int *dst) {
 }
 
 int s21_from_decimal_to_float(s21_decimal src, float *dst) {
+  if (dst == NULL) {
+    return ERROR;
+  }
+
   reduce_exponent(&src);
 
   int int_part;
