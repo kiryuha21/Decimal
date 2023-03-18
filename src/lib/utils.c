@@ -109,6 +109,9 @@ int scal_mul(s21_decimal val, int num, s21_decimal* res) {
 
 int mul_without_signs(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
   null_decimal(res);
+  if (s21_is_greater(decimal_abs(val2), decimal_abs(val1))) {
+    swap_decimals(&val1, &val2);
+  }
 
   int ret = OK;
   while (is_zero(&val2) == FALSE) {
@@ -297,11 +300,13 @@ int get_elder_bit_index(const s21_decimal* val) {
 }
 
 int left_shift(s21_decimal* val) {
-  int overflow = get_decimal_bit(val, (BITS_IN_INT - 1));
+  int overflow = 0;
 
   for (int i = 0; i < 3; ++i) {
+    int next_overflow =
+        get_decimal_bit(val, (BITS_IN_INT - 1) + i * BITS_IN_INT);
     val->bits[i] = (val->bits[i] << 1) + overflow;
-    overflow = get_decimal_bit(val, (BITS_IN_INT - 1) + i * BITS_IN_INT);
+    overflow = next_overflow;
   }
 
   if (overflow != 0) {
@@ -312,11 +317,11 @@ int left_shift(s21_decimal* val) {
 }
 
 int right_shift(s21_decimal* val, int* mod) {
-  int overflow = 0, next_overflow;
+  unsigned int overflow = 0;
 
   for (int i = 2; i >= 0; --i) {
-    next_overflow = get_decimal_bit(val, i * BITS_IN_INT);
-    val->bits[i] = (val->bits[i] >> 1) + (overflow * OVERFLOW_BIT);
+    unsigned int next_overflow = get_decimal_bit(val, i * BITS_IN_INT);
+    val->bits[i] = (val->bits[i] >> 1) + (overflow * (OVERFLOW_BIT >> 1));
     overflow = next_overflow;
   }
 
