@@ -45,18 +45,21 @@ int s21_round(s21_decimal value, s21_decimal *result) {
 }
 
 int s21_truncate(s21_decimal value, s21_decimal *result) {
+  if (result == NULL) {
+    return ERROR;
+  }
+
+  int original_sign = get_sign(&value);
   reduce_exponent(&value);
   *result = value;
 
   int exp = (int)get_exponent(&value);
-
-  for (int i = 0; exp > 0 && i <= 2; ++i) {
-    int j = 0;
-    for (; result->bits[i] > 0 && exp > 0; ++j, --exp) {
-      result->bits[i] /= 10;
-    }
-    exp -= (10 - j);
+  for (int i = 0; i < exp; ++i) {
+    s21_decimal mod;
+    scal_div(*result, 10, result, &mod);
   }
+  set_exponent(result, 0);
+  set_sign(result, original_sign);
 
   return OK;
 }
