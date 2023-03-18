@@ -92,6 +92,7 @@ int get_first_integer_bit_index(const s21_decimal *val);
 int left_shift(s21_decimal *val);
 int right_shift(s21_decimal *val, int *mod);
 void handle_decimal_inc(s21_decimal *val);
+float remove_elder_digit(float val);
 void print_decimal(const s21_decimal *val);
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_H

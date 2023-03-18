@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdio.h>
 
 #include "../s21_decimal.h"
@@ -406,7 +407,21 @@ void handle_decimal_inc(s21_decimal* val) {
   }
 
   val->bits[2] += 1;
-  return;
+}
+
+float remove_elder_digit(float val) {
+  int digits = 0;
+  int temp = (int)val;
+  for (; temp > 0; temp /= 10, ++digits) {
+  }
+
+  temp = (int)val;
+  int result = 0;
+  for (int i = 0; i < digits - 1; ++i, temp /= 10) {
+    result += temp % 10 * (int)pow(10.0, (double)i);
+  }
+
+  return val - (float)((int)val) + (float)result;
 }
 
 void print_decimal(const s21_decimal* val) {

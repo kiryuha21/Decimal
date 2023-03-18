@@ -1,4 +1,5 @@
 #include <limits.h>
+#include <float.h>
 #include <math.h>
 #include <stdio.h>
 
@@ -39,9 +40,14 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
     src = -src;
   }
 
-  int integer_part = (int)src;
+  // FIXME: wrong calculation of significant digits
+  float src_cp = src;
   int significant_digits = 0;
-  for (; integer_part > 0; integer_part /= 10, ++significant_digits) {
+  for (; src_cp > FLT_EPSILON && significant_digits <= 7; ++significant_digits) {
+    while (src_cp < 1) {
+      src_cp *= 10;
+    }
+    src_cp = remove_elder_digit(src_cp);
   }
 
   int exp = 7 - significant_digits;
