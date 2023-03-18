@@ -275,10 +275,6 @@ void reduce_exponent(s21_decimal* val) {
     }
   }
 
-  if (is_zero(val) == TRUE) {
-    set_sign(val, POSITIVE);
-  }
-
   set_exponent(val, exp);
 }
 
