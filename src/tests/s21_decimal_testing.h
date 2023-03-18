@@ -31,5 +31,13 @@ Suite *suite_s21_is_greater();
 Suite *suite_s21_is_less_or_equal();
 Suite *suite_s21_is_less();
 Suite *suite_s21_is_not_equal();
+Suite *suite_s21_mul();
+Suite *suite_s21_floor();
+Suite *suite_s21_from_decimal_to_float();
+Suite *suite_s21_from_decimal_to_int();
+Suite *suite_s21_from_float_to_decimal();
+Suite *suite_s21_from_int_to_decimal();
+Suite *suite_s21_round();
+Suite *suite_s21_truncate();
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_TESTING_H
