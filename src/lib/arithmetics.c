@@ -37,7 +37,7 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     return TOO_LARGE;
   }
 
-  set_exponent(result, scale);
+  set_exponent(result, scale * scale);
   int ret = mul_without_signs(value_1, value_2, result);
   if (ret != OK) {
     return ret;

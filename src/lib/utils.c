@@ -22,7 +22,7 @@ void set_decimal_bit(s21_decimal* val, int index, int bit) {
   set_bit(&val->bits[index / BITS_IN_INT], index % BITS_IN_INT, bit);
 }
 
-int get_higher_bit(int val) {
+int get_higher_bit(unsigned int val) {
   int res = -1;
   for (int i = 0; val != 0; ++i) {
     if ((val & 1) == 1) {
@@ -228,6 +228,8 @@ int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
 
 int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp) {
   int ret = OK;
+  reduce_exponent(num1);
+  reduce_exponent(num2);
 
   unsigned int exp1 = get_exponent(num1), exp2 = get_exponent(num2);
 
@@ -283,7 +285,6 @@ void reduce_exponent(s21_decimal* val) {
 s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,
                            unsigned int bit2, unsigned int bit3) {
   s21_decimal res = {{bit0, bit1, bit2, bit3}};
-  reduce_exponent(&res);
   return res;
 }
 
@@ -317,10 +318,10 @@ int left_shift(s21_decimal* val) {
 }
 
 int right_shift(s21_decimal* val, int* mod) {
-  unsigned int overflow = 0;
+  int overflow = 0;
 
   for (int i = 2; i >= 0; --i) {
-    unsigned int next_overflow = get_decimal_bit(val, i * BITS_IN_INT);
+    int next_overflow = get_decimal_bit(val, i * BITS_IN_INT);
     val->bits[i] = (val->bits[i] >> 1) + (overflow * (OVERFLOW_BIT >> 1));
     overflow = next_overflow;
   }

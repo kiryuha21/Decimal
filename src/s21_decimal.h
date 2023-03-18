@@ -62,7 +62,7 @@ int get_bit(unsigned int val, int index);
 int get_decimal_bit(const s21_decimal *val, int index);
 void set_bit(unsigned int *val, int index, int bit);
 void set_decimal_bit(s21_decimal *val, int index, int bit);
-int get_higher_bit(int val);
+int get_higher_bit(unsigned int val);
 int decimal_size(s21_decimal val);
 int get_sign(const s21_decimal *val);
 void set_sign(s21_decimal *val, int sign);
