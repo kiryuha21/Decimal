@@ -16,31 +16,28 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
   return OK;
 }
 
+// TODO: using upper boundary rounding if pure 5
+//  not sure if it is correct
 int s21_round(s21_decimal value, s21_decimal *result) {
+  if (result == NULL) {
+    return ERROR;
+  }
   reduce_exponent(&value);
 
+  int overflow = 0;
+  s21_decimal temp = value;
   int exp = (int)get_exponent(&value);
-  int first_integer_bit_ind = get_first_integer_bit_index(&value);
-  for (int i = first_integer_bit_ind; i >= 0; --i) {
-    unsigned int mod = (unsigned int)pow(10.0, (double)(exp % 10));
-    for (; mod > 0; mod /= 10, --exp) {
-      unsigned int digit = (value.bits[i] % mod) / (mod - 1);
-      if (digit != 5) {
-        s21_truncate(value, result);
-        if (digit > 5) {
-          handle_decimal_inc(result);
-        }
-        return OK;
-      }
-    }
+  for (int i = 0; i < exp - 1; ++i) {
+    s21_decimal mod;
+    scal_div(temp, 10, &temp, &mod);
+    overflow = mod.bits[0] + overflow > 5;
   }
 
-  // TODO: using upper boundary rounding
-  //  not sure if it is correct
   s21_truncate(value, result);
-  if (value.bits[0] > 5) {
+  if (temp.bits[0] % 10 + overflow > 5 || temp.bits[0] % 10 == 5) {
     handle_decimal_inc(result);
   }
+
   return OK;
 }
 
