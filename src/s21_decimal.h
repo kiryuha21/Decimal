@@ -75,7 +75,6 @@ int mul_without_signs(s21_decimal val1, s21_decimal val2, s21_decimal *res);
 int scal_div(s21_decimal val, int num, s21_decimal *res, s21_decimal *mod);
 int add_same_signs(s21_decimal value_1, s21_decimal value_2,
                    s21_decimal *result);
-s21_decimal decimal_abs(s21_decimal val);
 int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
                    s21_decimal *result);
 int scale_decimals(s21_decimal *num1, s21_decimal *num2, unsigned int *scale);
@@ -91,5 +90,6 @@ int right_shift(s21_decimal *val, int *mod);
 void handle_decimal_inc(s21_decimal *val);
 float remove_elder_digit(float val);
 void print_decimal(const s21_decimal *val);
+int make_first_bigger_no_signs(s21_decimal* first, s21_decimal* second);
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_H
