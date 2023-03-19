@@ -12,7 +12,7 @@ int s21_from_int_to_decimal(int src, s21_decimal *dst) {
 
   null_decimal(dst);
   if (src < 0) {
-    set_sign(dst, NEGATIVE);
+    set_bit(&dst->bits[SPEC_BIT], SIGN_BIT, NEGATIVE);
     src = -src;
   }
   dst->bits[0] = src;
@@ -36,7 +36,7 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
 
   null_decimal(dst);
   if (src < 0) {
-    set_sign(dst, NEGATIVE);
+    set_bit(&dst->bits[SPEC_BIT], SIGN_BIT, NEGATIVE);
     src = -src;
   }
 
@@ -52,7 +52,7 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
   }
 
   int exp = 7 - significant_digits;
-  set_exponent(dst, exp);
+  set_decimal_exponent(dst, exp);
 
   dst->bits[0] = (unsigned int)(src * powf(10, (float)exp));
 
@@ -66,7 +66,6 @@ int s21_from_decimal_to_int(s21_decimal src, int *dst) {
 
   s21_decimal integer_src;
   s21_truncate(src, &integer_src);
-  reduce_exponent(&src);
 
   if (get_elder_bit_index(&integer_src) != 0) {
     return ERROR;
@@ -77,7 +76,7 @@ int s21_from_decimal_to_int(s21_decimal src, int *dst) {
   }
 
   *dst = (int)integer_src.bits[0];
-  if (get_sign(&integer_src) == NEGATIVE) {
+  if (get_decimal_sign(&integer_src) == NEGATIVE) {
     *dst = -(*dst);
   }
 
@@ -89,19 +88,24 @@ int s21_from_decimal_to_float(s21_decimal src, float *dst) {
     return ERROR;
   }
 
-  reduce_exponent(&src);
+  big_decimal big_src = convert(src);
+
+  reduce_exponent(&big_src);
 
   int int_part;
   float float_part;
 
+  if (rconvert(big_src, &src) != OK) {
+    return ERROR;
+  }
   if (s21_from_decimal_to_int(src, &int_part) != OK) {
     return ERROR;
   }
 
-  unsigned int exp = get_exponent(&src);
+  unsigned int exp = get_exponent(&big_src);
   float power = powf(10, (float)exp);
   float_part = (float)(src.bits[0] % (int)power) * powf(0.1F, (float)exp);
-  if (get_sign(&src) == NEGATIVE) {
+  if (get_sign(&big_src) == NEGATIVE) {
     float_part = -float_part;
   }
 

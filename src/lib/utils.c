@@ -47,6 +47,10 @@ int get_sign(const big_decimal* val) {
   return get_bit(val->bits[BIG_SPEC_BIT], SIGN_BIT) ? NEGATIVE : POSITIVE;
 }
 
+int get_decimal_sign(const s21_decimal* val) {
+  return get_bit(val->bits[SPEC_BIT], SIGN_BIT) ? NEGATIVE : POSITIVE;
+}
+
 void set_sign(big_decimal* val, int sign) {
   set_bit(&val->bits[BIG_SPEC_BIT], SIGN_BIT, sign);
 }
@@ -57,6 +61,14 @@ void change_sign(big_decimal* val) {
     sign = POSITIVE;
   }
   set_sign(val, sign);
+}
+
+void change_decimal_sign(s21_decimal* val) {
+  int sign = NEGATIVE;
+  if (get_decimal_sign(val) == NEGATIVE) {
+    sign = POSITIVE;
+  }
+  set_bit(&val->bits[SPEC_BIT], SIGN_BIT, sign);
 }
 
 unsigned int get_exponent(const big_decimal* val) {
@@ -70,6 +82,13 @@ unsigned int get_decimal_exponent(const s21_decimal* val) {
 void set_exponent(big_decimal* val, unsigned int exp) {
   for (int i = 0; i < 8; ++i) {
     set_bit(&val->bits[BIG_SPEC_BIT], 16 + i, (int)(exp % 2));
+    exp /= 2;
+  }
+}
+
+void set_decimal_exponent(s21_decimal* val, unsigned int exp) {
+  for (int i = 0; i < 8; ++i) {
+    set_bit(&val->bits[SPEC_BIT], 16 + i, (int)(exp % 2));
     exp /= 2;
   }
 }
@@ -353,21 +372,24 @@ big_decimal create_big_decimal(unsigned int bit0, unsigned int bit1,
 big_decimal convert(s21_decimal val) {
   big_decimal res = {0};
   res.bits[BIG_SPEC_BIT] = val.bits[SPEC_BIT];
-  for (int i = BOT_BIT; i < TOP_BIT; ++i) {
+  for (int i = BOT_BIT; i <= TOP_BIT; ++i) {
     res.bits[i] = val.bits[i];
   }
   return res;
 }
 
-int convertable(big_decimal* val) { return OK; }
+int convertable(big_decimal* val) {
+  if (val->bits[3] || val->bits[4]) {
+    return ERROR;
+  }
+  return OK;
+}
 
 int rconvert(big_decimal val, s21_decimal* res) {
-  int result = OK;
-  if (convertable(&val) == OK) {
-    res->bits[SPEC_BIT] = val.bits[BIG_SPEC_BIT];
-    for (int i = BOT_BIT; i < TOP_BIT; ++i) {
-      res->bits[i] = val.bits[i];
-    }
+  int result = convertable(&val);
+  res->bits[SPEC_BIT] = val.bits[BIG_SPEC_BIT];
+  for (int i = BOT_BIT; i <= TOP_BIT; ++i) {
+    res->bits[i] = val.bits[i];
   }
   return result;
 }
@@ -475,10 +497,10 @@ void print_big_decimal(const big_decimal* val) {
 int made_first_bigger_no_signs(big_decimal* first, big_decimal* second) {
   for (int i = BIG_TOP_BIT; i >= BIG_BOT_BIT; --i) {
     if (first->bits[i] > second->bits[i]) {
-      return TRUE;
+      return FALSE;
     } else if (first->bits[i] < second->bits[i]) {
       swap_decimals(first, second);
-      return FALSE;
+      return TRUE;
     }
   }
 

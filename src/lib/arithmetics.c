@@ -28,9 +28,8 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   return rconvert(res, result);
 }
 
-/*
 int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-  change_sign(&value_2);
+  change_decimal_sign(&value_2);
 
   return s21_add(value_1, value_2, result);
 }
@@ -40,27 +39,31 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     return ERROR;
   }
 
+  big_decimal val1 = convert(value_1), val2 = convert(value_2);
+  big_decimal res = {0};
+
   unsigned int scale;
   null_decimal(result);
-  if (scale_decimals(&value_1, &value_2, &scale) != OK) {
+  unsigned int before_exp = get_exponent(&val1);
+  if (scale_decimals(&val1, &val2, &scale) != OK) {
     return TOO_LARGE;
   }
 
-  int ret = mul_without_signs(value_1, value_2, result);
-  set_exponent(result, scale + get_exponent(result));
+  int ret = mul_without_signs(val1, val2, &res);
+  set_exponent(&res, scale + before_exp - get_exponent(&res));
   if (ret != OK) {
     return ret;
   }
-  int first_sign = get_sign(&value_1), second_sign = get_sign(&value_2);
+  int first_sign = get_sign(&val1), second_sign = get_sign(&val2);
   if (first_sign != second_sign) {
-    set_sign(result, NEGATIVE);
+    set_sign(&res, NEGATIVE);
   } else {
-    set_sign(result, POSITIVE);
+    set_sign(&res, POSITIVE);
   }
 
-  reduce_exponent(result);
+  reduce_exponent(&res);
 
-  return OK;
+  return rconvert(res, result);
 }
 
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
@@ -70,4 +73,3 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   return OK;
 }
-*/

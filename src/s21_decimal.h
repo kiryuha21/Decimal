@@ -40,7 +40,6 @@ typedef struct big_decimal {
 
 // arithmetics.c
 int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
-/*
 int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
@@ -65,7 +64,6 @@ int s21_is_greater(s21_decimal, s21_decimal);
 int s21_is_greater_or_equal(s21_decimal, s21_decimal);
 int s21_is_equal(s21_decimal, s21_decimal);
 int s21_is_not_equal(s21_decimal, s21_decimal);
-*/
 
 // return codes for 6 functions upper
 #define FALSE 0
@@ -79,11 +77,14 @@ void set_decimal_bit(big_decimal *val, int index, int bit);
 int get_higher_bit(unsigned int val);
 int decimal_size(big_decimal val);
 int get_sign(const big_decimal *val);
+int get_decimal_sign(const s21_decimal *val);
 void set_sign(big_decimal *val, int sign);
 void change_sign(big_decimal *val);
+void change_decimal_sign(s21_decimal *val);
 unsigned int get_exponent(const big_decimal *val);
 unsigned int get_decimal_exponent(const s21_decimal *val);
 void set_exponent(big_decimal *val, unsigned int exp);
+void set_decimal_exponent(s21_decimal *val, unsigned int exp);
 int is_zero(const big_decimal *val);
 int scal_mul(big_decimal val, int num, big_decimal *res);
 int mul_without_signs(big_decimal val1, big_decimal val2, big_decimal *res);
