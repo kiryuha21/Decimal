@@ -23,7 +23,7 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 
   if (get_sign(&value_1) == get_sign(&value_2)) {
     int additional_bit = add_same_signs(value_1, value_2, result);
-    overflow += additional_bit;
+    overflow += additional_bit * OVERFLOW_BIT;
     return try_add_overflow(result, overflow);
   }
 
