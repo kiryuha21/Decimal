@@ -120,7 +120,7 @@ int scal_mul(s21_decimal val, int num, s21_decimal* res) {
   int ret = OK;
   while (num != 0) {
     if (num % 2 == 1) {
-      ret = s21_add(*res, val, res);
+      ret = add_same_signs(*res, val, res);
       if (ret != OK) {
         return ret;
       }
@@ -149,7 +149,7 @@ int mul_without_signs(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
     int mod = 0;
     right_shift(&val2, &mod);
     if (mod == 1) {
-      ret = s21_add(*res, val1, res);
+      ret = add_same_signs(*res, val1, res);
       if (ret != OK) {
         return ret;
       }
@@ -193,10 +193,7 @@ int scal_div(s21_decimal val, int num, s21_decimal* res, s21_decimal* mod) {
     }
     set_decimal_bit(mod, 0, get_decimal_bit(&val, i));
     if (mod->bits[0] >= num) {
-      ret = s21_sub(*mod, create_decimal(num, 0, 0, 0), mod);
-      if (ret != OK) {
-        return ret;
-      }
+      mod->bits[0] -= num;
       set_decimal_bit(res, 0, 1);
     }
   }
@@ -221,14 +218,14 @@ int pure_add(const s21_decimal* value_1, const s21_decimal* value_2,
   return ret;
 }
 
-int add_same_signs(const s21_decimal* value_1, const s21_decimal* value_2,
+int add_same_signs(s21_decimal value_1, s21_decimal value_2,
                    s21_decimal* result) {
   int ret = OK;
-  set_sign(result, get_sign(value_1));
+  set_sign(result, get_sign(&value_1));
   unsigned long long int overflow = 0;
   for (int i = 0; i < 3; ++i) {
     unsigned long long bit_val =
-        (unsigned long long)value_1->bits[i] + value_2->bits[i] + overflow;
+        (unsigned long long)value_1.bits[i] + value_2.bits[i] + overflow;
     result->bits[i] = bit_val % OVERFLOW_BIT;
     overflow = bit_val / OVERFLOW_BIT;
   }
@@ -274,7 +271,6 @@ int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
 }
 
 int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp) {
-  int ret = OK;
   reduce_exponent(num1);
   reduce_exponent(num2);
 
@@ -283,18 +279,22 @@ int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp) {
   if (exp1 > exp2) {
     *exp = exp1;
     set_exponent(num2, *exp);
-    for (unsigned int i = exp2; i < exp1 && ret == OK; ++i) {
-      ret = pure_mul(*num2, 10, num2);
+    for (unsigned int i = exp2; i < exp1; ++i) {
+      if (pure_mul(*num2, 10, num2) != OK) {
+        return TOO_LARGE;
+      }
     }
   } else {
     *exp = exp2;
     set_exponent(num1, *exp);
-    for (unsigned int i = exp1; i < exp2 && ret == OK; ++i) {
-      ret = pure_mul(*num1, 10, num1);
+    for (unsigned int i = exp1; i < exp2; ++i) {
+      if (pure_mul(*num1, 10, num1) != OK) {
+        return TOO_SMALL;
+      }
     }
   }
 
-  return ret;
+  return OK;
 }
 
 void null_decimal(s21_decimal* val) {

@@ -73,7 +73,7 @@ int is_zero(const s21_decimal *val);
 int scal_mul(s21_decimal val, int num, s21_decimal *res);
 int mul_without_signs(s21_decimal val1, s21_decimal val2, s21_decimal *res);
 int scal_div(s21_decimal val, int num, s21_decimal *res, s21_decimal *mod);
-int add_same_signs(const s21_decimal *value_1, const s21_decimal *value_2,
+int add_same_signs(s21_decimal value_1, s21_decimal value_2,
                    s21_decimal *result);
 s21_decimal decimal_abs(s21_decimal val);
 int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
