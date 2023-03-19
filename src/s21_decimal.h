@@ -117,6 +117,6 @@ void handle_decimal_inc(s21_decimal *val);
 float remove_elder_digit(float val);
 void print_decimal(const s21_decimal *val);
 void print_big_decimal(const big_decimal *val);
-int made_first_bigger_no_signs(big_decimal *first, big_decimal *second);
+int make_first_bigger_no_signs(big_decimal *first, big_decimal *second);
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_H

@@ -163,7 +163,7 @@ int scal_mul(big_decimal val, int num, big_decimal* res) {
 
 int mul_without_signs(big_decimal val1, big_decimal val2, big_decimal* res) {
   null_big_decimal(res);
-  made_first_bigger_no_signs(&val1, &val2);
+  make_first_bigger_no_signs(&val1, &val2);
 
   int ret = OK;
   while (is_zero(&val2) == FALSE) {
@@ -267,7 +267,7 @@ int sub_diff_signs(big_decimal value_1, big_decimal value_2,
                    big_decimal* result) {
   int ret = OK;
   set_sign(result, get_sign(&value_1));
-  if (made_first_bigger_no_signs(&value_1, &value_2) == TRUE) {
+  if (make_first_bigger_no_signs(&value_1, &value_2) == TRUE) {
     change_sign(result);
   }
   unsigned long long int overflow = 0;
@@ -494,7 +494,7 @@ void print_big_decimal(const big_decimal* val) {
       val->bits[4], val->bits[3], val->bits[2], val->bits[1], val->bits[0]);
 }
 
-int made_first_bigger_no_signs(big_decimal* first, big_decimal* second) {
+int make_first_bigger_no_signs(big_decimal* first, big_decimal* second) {
   for (int i = BIG_TOP_BIT; i >= BIG_BOT_BIT; --i) {
     if (first->bits[i] > second->bits[i]) {
       return FALSE;
