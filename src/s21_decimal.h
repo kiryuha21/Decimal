@@ -82,9 +82,6 @@ int scale_decimals(s21_decimal *num1, s21_decimal *num2, unsigned int *scale);
 void null_decimal(s21_decimal *val);
 void swap_decimals(s21_decimal *val1, s21_decimal *val2);
 void reduce_exponent(s21_decimal *val);
-int pure_add(const s21_decimal *value_1, const s21_decimal *value_2,
-             s21_decimal *result);
-int pure_mul(s21_decimal val, int num, s21_decimal *res);
 s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,
                            unsigned int bit2, unsigned int bit3);
 int get_elder_bit_index(const s21_decimal *val);
