@@ -7,7 +7,7 @@ int get_bit(unsigned int val, int index) {
   return (val & ((unsigned int)1 << index)) ? 1 : 0;
 }
 
-int get_decimal_bit(const s21_decimal* val, int index) {
+int get_decimal_bit(const big_decimal* val, int index) {
   return (get_bit(val->bits[index / BITS_IN_INT], index % BITS_IN_INT));
 }
 
@@ -19,7 +19,7 @@ void set_bit(unsigned int* val, int index, int bit) {
   }
 }
 
-void set_decimal_bit(s21_decimal* val, int index, int bit) {
+void set_decimal_bit(big_decimal* val, int index, int bit) {
   set_bit(&val->bits[index / BITS_IN_INT], index % BITS_IN_INT, bit);
 }
 
@@ -34,8 +34,8 @@ int get_higher_bit(unsigned int val) {
   return res;
 }
 
-int decimal_size(s21_decimal val) {
-  for (int i = 2; i >= 0; --i) {
+int decimal_size(big_decimal val) {
+  for (int i = BIG_TOP_BIT; i >= BIG_BOT_BIT; --i) {
     if (val.bits[i] != 0) {
       return get_higher_bit(val.bits[i]) + BITS_IN_INT * i;
     }
@@ -43,15 +43,15 @@ int decimal_size(s21_decimal val) {
   return 0;
 }
 
-int get_sign(const s21_decimal* val) {
-  return get_bit(val->bits[3], SIGN_BIT) ? NEGATIVE : POSITIVE;
+int get_sign(const big_decimal* val) {
+  return get_bit(val->bits[BIG_SPEC_BIT], SIGN_BIT) ? NEGATIVE : POSITIVE;
 }
 
-void set_sign(s21_decimal* val, int sign) {
-  set_bit(&val->bits[3], SIGN_BIT, sign);
+void set_sign(big_decimal* val, int sign) {
+  set_bit(&val->bits[BIG_SPEC_BIT], SIGN_BIT, sign);
 }
 
-void change_sign(s21_decimal* val) {
+void change_sign(big_decimal* val) {
   int sign = NEGATIVE;
   if (get_sign(val) == NEGATIVE) {
     sign = POSITIVE;
@@ -59,18 +59,22 @@ void change_sign(s21_decimal* val) {
   set_sign(val, sign);
 }
 
-unsigned int get_exponent(const s21_decimal* val) {
-  return (val->bits[3] & EXPONENT_MASK) >> 16;
+unsigned int get_exponent(const big_decimal* val) {
+  return (val->bits[BIG_SPEC_BIT] & EXPONENT_MASK) >> 16;
 }
 
-void set_exponent(s21_decimal* val, unsigned int exp) {
+unsigned int get_decimal_exponent(const s21_decimal* val) {
+  return (val->bits[SPEC_BIT] & EXPONENT_MASK) >> 16;
+}
+
+void set_exponent(big_decimal* val, unsigned int exp) {
   for (int i = 0; i < 8; ++i) {
-    set_bit(&val->bits[3], 16 + i, (int)(exp % 2));
+    set_bit(&val->bits[BIG_SPEC_BIT], 16 + i, (int)(exp % 2));
     exp /= 2;
   }
 }
 
-int is_zero(const s21_decimal* val) {
+int is_zero(const big_decimal* val) {
   int res = FALSE;
   if (val->bits[0] == 0 && val->bits[1] == 0 && val->bits[2] == 0) {
     res = TRUE;
@@ -78,8 +82,8 @@ int is_zero(const s21_decimal* val) {
   return res;
 }
 
-int pure_mul(s21_decimal val, int num, s21_decimal* res) {
-  null_decimal(res);
+int pure_mul(big_decimal val, int num, big_decimal* res) {
+  null_big_decimal(res);
   set_sign(res, get_sign(&val));
   set_exponent(res, get_exponent(&val));
   if (num < 0) {
@@ -108,8 +112,8 @@ int pure_mul(s21_decimal val, int num, s21_decimal* res) {
   return ret;
 }
 
-int scal_mul(s21_decimal val, int num, s21_decimal* res) {
-  null_decimal(res);
+int scal_mul(big_decimal val, int num, big_decimal* res) {
+  null_big_decimal(res);
   set_sign(res, get_sign(&val));
   set_exponent(res, get_exponent(&val));
   if (num < 0) {
@@ -120,7 +124,7 @@ int scal_mul(s21_decimal val, int num, s21_decimal* res) {
   int ret = OK;
   while (num != 0) {
     if (num % 2 == 1) {
-      ret = s21_add(*res, val, res);
+      ret = add_same_signs(*res, val, res);
       if (ret != OK) {
         return ret;
       }
@@ -138,18 +142,16 @@ int scal_mul(s21_decimal val, int num, s21_decimal* res) {
   return ret;
 }
 
-int mul_without_signs(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
-  null_decimal(res);
-  if (s21_is_greater(decimal_abs(val2), decimal_abs(val1))) {
-    swap_decimals(&val1, &val2);
-  }
+int mul_without_signs(big_decimal val1, big_decimal val2, big_decimal* res) {
+  null_big_decimal(res);
+  made_first_bigger_no_signs(&val1, &val2);
 
   int ret = OK;
   while (is_zero(&val2) == FALSE) {
     int mod = 0;
     right_shift(&val2, &mod);
     if (mod == 1) {
-      ret = s21_add(*res, val1, res);
+      ret = add_same_signs(*res, val1, res);
       if (ret != OK) {
         return ret;
       }
@@ -166,12 +168,12 @@ int mul_without_signs(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
   return ret;
 }
 
-int scal_div(s21_decimal val, int num, s21_decimal* res, s21_decimal* mod) {
+int scal_div(big_decimal val, int num, big_decimal* res, big_decimal* mod) {
   if (num == 0) {
     return ZERO_DIVISION;
   }
 
-  null_decimal(res);
+  null_big_decimal(res);
   set_sign(res, get_sign(&val));
   set_exponent(res, get_exponent(&val));
   if (num < 0) {
@@ -181,7 +183,7 @@ int scal_div(s21_decimal val, int num, s21_decimal* res, s21_decimal* mod) {
 
   int ret = OK;
 
-  null_decimal(mod);
+  null_big_decimal(mod);
   for (int i = decimal_size(val); i >= 0; --i) {
     ret = left_shift(res);
     if (ret != OK) {
@@ -192,11 +194,8 @@ int scal_div(s21_decimal val, int num, s21_decimal* res, s21_decimal* mod) {
       return ret;
     }
     set_decimal_bit(mod, 0, get_decimal_bit(&val, i));
-    if (mod->bits[0] >= num) {
-      ret = s21_sub(*mod, create_decimal(num, 0, 0, 0), mod);
-      if (ret != OK) {
-        return ret;
-      }
+    if (mod->bits[BIG_BOT_BIT] >= num) {
+      mod->bits[BIG_BOT_BIT] -= num;
       set_decimal_bit(res, 0, 1);
     }
   }
@@ -204,12 +203,12 @@ int scal_div(s21_decimal val, int num, s21_decimal* res, s21_decimal* mod) {
   return ret;
 }
 
-int pure_add(const s21_decimal* value_1, const s21_decimal* value_2,
-             s21_decimal* result) {
+int pure_add(const big_decimal* value_1, const big_decimal* value_2,
+             big_decimal* result) {
   int ret = OK;
   set_sign(result, get_sign(value_1));
   unsigned long long int overflow = 0;
-  for (int i = 0; i < 3; ++i) {
+  for (int i = BIG_BOT_BIT; i <= BIG_TOP_BIT; ++i) {
     unsigned long long bit_val =
         (unsigned long long)value_1->bits[i] + value_2->bits[i] + overflow;
     result->bits[i] = bit_val % OVERFLOW_BIT;
@@ -221,14 +220,14 @@ int pure_add(const s21_decimal* value_1, const s21_decimal* value_2,
   return ret;
 }
 
-int add_same_signs(const s21_decimal* value_1, const s21_decimal* value_2,
-                   s21_decimal* result) {
+int add_same_signs(big_decimal value_1, big_decimal value_2,
+                   big_decimal* result) {
   int ret = OK;
-  set_sign(result, get_sign(value_1));
+  set_sign(result, get_sign(&value_1));
   unsigned long long int overflow = 0;
-  for (int i = 0; i < 3; ++i) {
+  for (int i = BIG_BOT_BIT; i <= BIG_TOP_BIT; ++i) {
     unsigned long long bit_val =
-        (unsigned long long)value_1->bits[i] + value_2->bits[i] + overflow;
+        (unsigned long long)value_1.bits[i] + value_2.bits[i] + overflow;
     result->bits[i] = bit_val % OVERFLOW_BIT;
     overflow = bit_val / OVERFLOW_BIT;
   }
@@ -239,24 +238,22 @@ int add_same_signs(const s21_decimal* value_1, const s21_decimal* value_2,
   return ret;
 }
 
-s21_decimal decimal_abs(s21_decimal val) {
-  s21_decimal res = val;
+big_decimal decimal_abs(big_decimal val) {
+  big_decimal res = val;
   set_sign(&res, POSITIVE);
   return res;
 }
 
-int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
-                   s21_decimal* result) {
+int sub_diff_signs(big_decimal value_1, big_decimal value_2,
+                   big_decimal* result) {
   int ret = OK;
   set_sign(result, get_sign(&value_1));
-  if (s21_is_greater_or_equal(decimal_abs(value_1), decimal_abs(value_2)) ==
-      FALSE) {
-    swap_decimals(&value_1, &value_2);
+  if (made_first_bigger_no_signs(&value_1, &value_2) == TRUE) {
     change_sign(result);
   }
   unsigned long long int overflow = 0;
   unsigned long long int bit_val;
-  for (int i = 0; i < 3; ++i) {
+  for (int i = BIG_BOT_BIT; i <= BIG_TOP_BIT; ++i) {
     if (value_1.bits[i] >= value_2.bits[i] + overflow) {
       bit_val = value_1.bits[i] - value_2.bits[i] - overflow;
       overflow = 0;
@@ -273,7 +270,7 @@ int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
   return ret;
 }
 
-int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp) {
+int scale_decimals(big_decimal* num1, big_decimal* num2, unsigned int* exp) {
   int ret = OK;
   reduce_exponent(num1);
   reduce_exponent(num2);
@@ -298,20 +295,26 @@ int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp) {
 }
 
 void null_decimal(s21_decimal* val) {
-  for (int i = 0; i < 4; ++i) {
+  for (int i = BOT_BIT; i <= SPEC_BIT; ++i) {
     val->bits[i] = 0;
   }
 }
 
-void swap_decimals(s21_decimal* val1, s21_decimal* val2) {
-  s21_decimal cp = *val2;
+void null_big_decimal(big_decimal* val) {
+  for (int i = BIG_BOT_BIT; i <= BIG_SPEC_BIT; ++i) {
+    val->bits[i] = 0;
+  }
+}
+
+void swap_decimals(big_decimal* val1, big_decimal* val2) {
+  big_decimal cp = *val2;
   *val2 = *val1;
   *val1 = cp;
 }
 
-void reduce_exponent(s21_decimal* val) {
+void reduce_exponent(big_decimal* val) {
   unsigned int exp = get_exponent(val);
-  s21_decimal reduced = *val, mod = DEFAULT_DECIMAL;
+  big_decimal reduced = *val, mod = DEFAULT_DECIMAL;
 
   while (exp > 0 && (is_zero(&mod) == TRUE || exp > 28) &&
          is_zero(&reduced) == FALSE) {
@@ -340,6 +343,13 @@ s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,
   return res;
 }
 
+big_decimal create_big_decimal(unsigned int bit0, unsigned int bit1,
+                               unsigned int bit2, unsigned int bit3,
+                               unsigned int bit4, unsigned int bit5) {
+  big_decimal res = {{bit0, bit1, bit2, bit3, bit4, bit5}};
+  return res;
+}
+
 int get_elder_bit_index(const s21_decimal* val) {
   if (val->bits[1] == 0) {
     return 0;
@@ -353,7 +363,7 @@ int get_elder_bit_index(const s21_decimal* val) {
 }
 
 int get_first_integer_bit_index(const s21_decimal* val) {
-  int exp = (int)get_exponent(val);
+  int exp = (int)get_decimal_exponent(val);
   if (exp < 10) {
     return 0;
   }
@@ -365,10 +375,10 @@ int get_first_integer_bit_index(const s21_decimal* val) {
   return 2;
 }
 
-int left_shift(s21_decimal* val) {
+int left_shift(big_decimal* val) {
   int overflow = 0;
 
-  for (int i = 0; i < 3; ++i) {
+  for (int i = BIG_BOT_BIT; i <= BIG_TOP_BIT; ++i) {
     int next_overflow =
         get_decimal_bit(val, (BITS_IN_INT - 1) + i * BITS_IN_INT);
     val->bits[i] = (val->bits[i] << 1) + overflow;
@@ -382,10 +392,10 @@ int left_shift(s21_decimal* val) {
   return OK;
 }
 
-int right_shift(s21_decimal* val, int* mod) {
+int right_shift(big_decimal* val, int* mod) {
   int overflow = 0;
 
-  for (int i = 2; i >= 0; --i) {
+  for (int i = BIG_TOP_BIT; i >= BIG_BOT_BIT; --i) {
     int next_overflow = get_decimal_bit(val, i * BITS_IN_INT);
     val->bits[i] = (val->bits[i] >> 1) + (overflow * (OVERFLOW_BIT >> 1));
     overflow = next_overflow;
@@ -429,4 +439,15 @@ void print_decimal(const s21_decimal* val) {
   printf("\nsign = %s\nexp = %u\nbit[2] - %.8X\nbit[1] - %.8X\nbit[0] - %.8X\n",
          get_sign(val) == POSITIVE ? "POSITIVE" : "NEGATIVE", get_exponent(val),
          val->bits[2], val->bits[1], val->bits[0]);
+}
+
+int made_first_bigger_no_signs(big_decimal* first, big_decimal* second) {
+  for (int i = BIG_TOP_BIT; i >= BIG_BOT_BIT; --i) {
+    if (first->bits[i] > second->bits[i]) {
+      return TRUE;
+    } else if (first->bits[i] < second->bits[i]) {
+      swap_decimals(first, second);
+      return FALSE;
+    }
+  }
 }
