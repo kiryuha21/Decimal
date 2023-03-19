@@ -8,14 +8,14 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   unsigned int scale;
   int ret = scale_decimals(&value_1, &value_2, &scale);
 
-  unsigned long long overflow = 0;
+  s21_decimal overflow = {0};
   if (ret == TOO_SMALL) {
-    overflow = value_2.bits[2];
-    value_2.bits[2] = 0;
+    overflow = value_2;
+    null_decimal(&value_2);
     scale_decimals(&value_1, &value_2, &scale);
   } else if (ret == TOO_LARGE) {
-    overflow = value_1.bits[2];
-    value_1.bits[2] = 0;
+    overflow = value_1;
+    null_decimal(&value_1);
     scale_decimals(&value_1, &value_2, &scale);
   }
 
@@ -23,7 +23,7 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 
   if (get_sign(&value_1) == get_sign(&value_2)) {
     int additional_bit = add_same_signs(value_1, value_2, result);
-    overflow += additional_bit * OVERFLOW_BIT;
+    overflow.bits[0] += additional_bit;
     return try_add_overflow(result, overflow);
   }
 

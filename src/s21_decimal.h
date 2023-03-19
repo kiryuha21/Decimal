@@ -91,6 +91,6 @@ void handle_decimal_inc(s21_decimal *val);
 float remove_elder_digit(float val);
 void print_decimal(const s21_decimal *val);
 int make_first_bigger_no_signs(s21_decimal *first, s21_decimal *second);
-int try_add_overflow(s21_decimal *val, unsigned long long overflow);
+int try_add_overflow(s21_decimal *val, s21_decimal overflow);
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_H

@@ -389,8 +389,8 @@ int make_first_bigger_no_signs(s21_decimal* first, s21_decimal* second) {
   return FALSE;
 }
 
-int try_add_overflow(s21_decimal* val, unsigned long long overflow) {
-  if (overflow == 0) {
+int try_add_overflow(s21_decimal* val, s21_decimal overflow) {
+  if (is_zero(&overflow)) {
     return OK;
   }
 
