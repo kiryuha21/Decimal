@@ -171,19 +171,16 @@ int scal_div(s21_decimal val, int num, s21_decimal* res, s21_decimal* mod) {
 
 int add_same_signs(s21_decimal value_1, s21_decimal value_2,
                    s21_decimal* result) {
-  int ret = OK;
   set_sign(result, get_sign(&value_1));
-  unsigned long long int overflow = 0;
+  int overflow = 0;
   for (int i = 0; i < 3; ++i) {
     unsigned long long bit_val =
         (unsigned long long)value_1.bits[i] + value_2.bits[i] + overflow;
     result->bits[i] = bit_val % OVERFLOW_BIT;
-    overflow = bit_val / OVERFLOW_BIT;
+    overflow = (int)(bit_val / OVERFLOW_BIT);
   }
-  if (overflow != 0) {
-    ret = TOO_LARGE;
-  }
-  return ret;
+
+  return overflow;
 }
 
 int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
@@ -222,20 +219,24 @@ int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp) {
 
   if (exp1 > exp2) {
     *exp = exp1;
-    set_exponent(num2, *exp);
+    s21_decimal temp = *num2;
+    set_exponent(&temp, *exp);
     for (unsigned int i = exp2; i < exp1; ++i) {
-      if (scal_mul(*num2, 10, num2) != OK) {
-        return TOO_LARGE;
-      }
-    }
-  } else {
-    *exp = exp2;
-    set_exponent(num1, *exp);
-    for (unsigned int i = exp1; i < exp2; ++i) {
-      if (scal_mul(*num1, 10, num1) != OK) {
+      if (scal_mul(temp, 10, &temp) != OK) {
         return TOO_SMALL;
       }
     }
+    *num2 = temp;
+  } else {
+    *exp = exp2;
+    s21_decimal temp = *num1;
+    set_exponent(&temp, *exp);
+    for (unsigned int i = exp1; i < exp2; ++i) {
+      if (scal_mul(temp, 10, &temp) != OK) {
+        return TOO_LARGE;
+      }
+    }
+    *num1 = temp;
   }
 
   return OK;
@@ -376,14 +377,22 @@ void print_decimal(const s21_decimal* val) {
 
 // return TRUE if swapped
 int make_first_bigger_no_signs(s21_decimal* first, s21_decimal* second) {
-    for (int i = 2; i >= 0; --i) {
-        if (first->bits[i] > second->bits[i]) {
-            return FALSE;
-        } else if (second->bits[i] > first->bits[i]) {
-            swap_decimals(first, second);
-            return TRUE;
-        }
+  for (int i = 2; i >= 0; --i) {
+    if (first->bits[i] > second->bits[i]) {
+      return FALSE;
+    } else if (second->bits[i] > first->bits[i]) {
+      swap_decimals(first, second);
+      return TRUE;
     }
+  }
 
-    return FALSE;
+  return FALSE;
+}
+
+int try_add_overflow(s21_decimal* val, unsigned long long overflow) {
+  if (overflow == 0) {
+    return OK;
+  }
+
+  return TOO_LARGE;
 }
