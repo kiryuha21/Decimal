@@ -310,24 +310,25 @@ void swap_decimals(s21_decimal* val1, s21_decimal* val2) {
 }
 
 void reduce_exponent(s21_decimal* val) {
-  if (is_zero(val) == TRUE) {
-    set_sign(val, POSITIVE);
-    set_exponent(val, 0);
-    return;
-  }
-
   unsigned int exp = get_exponent(val);
   s21_decimal reduced = *val, mod = DEFAULT_DECIMAL;
 
-  while (exp > 0 && is_zero(&mod) == TRUE && is_zero(&reduced) == FALSE) {
+  while (exp > 0 && (is_zero(&mod) == TRUE || exp > 28) &&
+         is_zero(&reduced) == FALSE) {
     int ret = scal_div(reduced, 10, &reduced, &mod);
     if (ret != OK) {
       return;
     }
-    if (is_zero(&mod)) {
+    if (is_zero(&mod) == TRUE || exp > 28) {
       *val = reduced;
       --exp;
     }
+  }
+
+  if (is_zero(val) == TRUE) {
+    set_sign(val, POSITIVE);
+    set_exponent(val, 0);
+    return;
   }
 
   set_exponent(val, exp);
