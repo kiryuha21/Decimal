@@ -38,6 +38,7 @@ typedef struct big_decimal {
 #define TOO_SMALL 2
 #define ZERO_DIVISION 3
 
+/*
 // arithmetics.c
 int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
@@ -57,10 +58,6 @@ int s21_round(s21_decimal value, s21_decimal *result);
 int s21_truncate(s21_decimal value, s21_decimal *result);
 int s21_negate(s21_decimal value, s21_decimal *result);
 
-// return codes for 6 functions below
-#define FALSE 0
-#define TRUE 1
-
 // comparisons.c
 int s21_is_less(s21_decimal, s21_decimal);
 int s21_is_less_or_equal(s21_decimal, s21_decimal);
@@ -68,6 +65,11 @@ int s21_is_greater(s21_decimal, s21_decimal);
 int s21_is_greater_or_equal(s21_decimal, s21_decimal);
 int s21_is_equal(s21_decimal, s21_decimal);
 int s21_is_not_equal(s21_decimal, s21_decimal);
+*/
+
+// return codes for 6 functions upper
+#define FALSE 0
+#define TRUE 1
 
 // utils
 int get_bit(unsigned int val, int index);
@@ -88,7 +90,6 @@ int mul_without_signs(big_decimal val1, big_decimal val2, big_decimal *res);
 int scal_div(big_decimal val, int num, big_decimal *res, big_decimal *mod);
 int add_same_signs(big_decimal value_1, big_decimal value_2,
                    big_decimal *result);
-big_decimal decimal_abs(big_decimal val);
 int sub_diff_signs(big_decimal value_1, big_decimal value_2,
                    big_decimal *result);
 int scale_decimals(big_decimal *num1, big_decimal *num2, unsigned int *scale);
@@ -104,6 +105,9 @@ s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,
 big_decimal create_big_decimal(unsigned int bit0, unsigned int bit1,
                                unsigned int bit2, unsigned int bit3,
                                unsigned int bit4, unsigned int bit5);
+big_decimal convert(s21_decimal val);
+int convertable(big_decimal *val);
+int rconvert(big_decimal val, s21_decimal *res);
 int get_elder_bit_index(const s21_decimal *val);
 int get_first_integer_bit_index(const s21_decimal *val);
 int left_shift(big_decimal *val);
@@ -111,6 +115,7 @@ int right_shift(big_decimal *val, int *mod);
 void handle_decimal_inc(s21_decimal *val);
 float remove_elder_digit(float val);
 void print_decimal(const s21_decimal *val);
+void print_big_decimal(const big_decimal *val);
 int made_first_bigger_no_signs(big_decimal *first, big_decimal *second);
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_H

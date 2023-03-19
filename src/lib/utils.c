@@ -350,6 +350,28 @@ big_decimal create_big_decimal(unsigned int bit0, unsigned int bit1,
   return res;
 }
 
+big_decimal convert(s21_decimal val) {
+  big_decimal res = {0};
+  res.bits[BIG_SPEC_BIT] = val.bits[SPEC_BIT];
+  for (int i = BOT_BIT; i < TOP_BIT; ++i) {
+    res.bits[i] = val.bits[i];
+  }
+  return res;
+}
+
+int convertable(big_decimal* val) { return OK; }
+
+int rconvert(big_decimal val, s21_decimal* res) {
+  int result = OK;
+  if (convertable(&val) == OK) {
+    res->bits[SPEC_BIT] = val.bits[BIG_SPEC_BIT];
+    for (int i = BOT_BIT; i < TOP_BIT; ++i) {
+      val.bits[i] = res->bits[i];
+    }
+  }
+  return result;
+}
+
 int get_elder_bit_index(const s21_decimal* val) {
   if (val->bits[1] == 0) {
     return 0;
@@ -437,8 +459,17 @@ float remove_elder_digit(float val) {
 
 void print_decimal(const s21_decimal* val) {
   printf("\nsign = %s\nexp = %u\nbit[2] - %.8X\nbit[1] - %.8X\nbit[0] - %.8X\n",
-         get_sign(val) == POSITIVE ? "POSITIVE" : "NEGATIVE", get_exponent(val),
-         val->bits[2], val->bits[1], val->bits[0]);
+         get_bit(val->bits[SPEC_BIT], SIGN_BIT) == POSITIVE ? "POSITIVE"
+                                                            : "NEGATIVE",
+         get_decimal_exponent(val), val->bits[2], val->bits[1], val->bits[0]);
+}
+
+void print_big_decimal(const big_decimal* val) {
+  printf(
+      "\nsign = %s\nexp = %u\nbit[4] - %.8X\nbit[3] - %.8X\nbit[2] - "
+      "%.8X\nbit[1] - %.8X\nbit[0] - %.8X\n",
+      get_sign(val) == POSITIVE ? "POSITIVE" : "NEGATIVE", get_exponent(val),
+      val->bits[4], val->bits[3], val->bits[2], val->bits[1], val->bits[0]);
 }
 
 int made_first_bigger_no_signs(big_decimal* first, big_decimal* second) {
@@ -450,4 +481,6 @@ int made_first_bigger_no_signs(big_decimal* first, big_decimal* second) {
       return FALSE;
     }
   }
+
+  return FALSE;
 }
