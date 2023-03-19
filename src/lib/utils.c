@@ -366,7 +366,7 @@ int rconvert(big_decimal val, s21_decimal* res) {
   if (convertable(&val) == OK) {
     res->bits[SPEC_BIT] = val.bits[BIG_SPEC_BIT];
     for (int i = BOT_BIT; i < TOP_BIT; ++i) {
-      val.bits[i] = res->bits[i];
+      res->bits[i] = val.bits[i];
     }
   }
   return result;

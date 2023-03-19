@@ -38,9 +38,9 @@ typedef struct big_decimal {
 #define TOO_SMALL 2
 #define ZERO_DIVISION 3
 
-/*
 // arithmetics.c
 int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
+/*
 int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result);

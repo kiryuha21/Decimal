@@ -5,20 +5,30 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     return ERROR;
   }
 
+  big_decimal val1 = convert(value_1), val2 = convert(value_2);
+  big_decimal res = {0};
+
   unsigned int scale;
-  if (scale_decimals(&value_1, &value_2, &scale) != OK) {
+  if (scale_decimals(&val1, &val2, &scale) != OK) {
     return TOO_LARGE;
   }
 
-  set_exponent(result, scale);
+  set_exponent(&res, scale);
 
-  if (get_sign(&value_1) == get_sign(&value_2)) {
-    return add_same_signs(&value_1, &value_2, result);
+  int ret = OK;
+  if (get_sign(&val1) == get_sign(&val2)) {
+    ret = add_same_signs(val1, val2, &res);
+  } else {
+    ret = sub_diff_signs(val1, val2, &res);
+  }
+  if (ret != OK) {
+    return ret;
   }
 
-  return sub_diff_signs(value_1, value_2, result);
+  return rconvert(res, result);
 }
 
+/*
 int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   change_sign(&value_2);
 
@@ -60,3 +70,4 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   return OK;
 }
+*/
