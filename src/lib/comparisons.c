@@ -4,7 +4,11 @@
 
 int s21_is_less(s21_decimal first, s21_decimal second) {
   unsigned int scale;
-  scale_decimals(&first, &second, &scale, NULL);
+  s21_decimal overflow = DEFAULT_DECIMAL;
+  int ret = scale_decimals(&first, &second, &scale, &overflow);
+  if (is_zero(&overflow) == FALSE) {
+    return ret == TOO_SMALL ? FALSE : TRUE;
+  }
 
   int first_sign = get_sign(&first);
   int second_sign = get_sign(&second);
@@ -34,7 +38,11 @@ int s21_is_less_or_equal(s21_decimal first, s21_decimal second) {
 
 int s21_is_greater(s21_decimal first, s21_decimal second) {
   unsigned int scale;
-  scale_decimals(&first, &second, &scale, NULL);
+  s21_decimal overflow = DEFAULT_DECIMAL;
+  int ret = scale_decimals(&first, &second, &scale, &overflow);
+  if (is_zero(&overflow) == FALSE) {
+    return ret == TOO_SMALL ? TRUE : FALSE;
+  }
 
   int first_sign = get_sign(&first);
   int second_sign = get_sign(&second);
@@ -64,7 +72,11 @@ int s21_is_greater_or_equal(s21_decimal first, s21_decimal second) {
 
 int s21_is_equal(s21_decimal first, s21_decimal second) {
   unsigned int scale;
-  scale_decimals(&first, &second, &scale, NULL);
+  s21_decimal overflow = DEFAULT_DECIMAL;
+  scale_decimals(&first, &second, &scale, &overflow);
+  if (is_zero(&overflow) == FALSE) {
+    return FALSE;
+  }
 
   for (int i = 0; i < 3; ++i) {
     if (first.bits[i] != second.bits[i]) {

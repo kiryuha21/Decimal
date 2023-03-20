@@ -219,6 +219,9 @@ int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp,
   }
 
   set_exponent(&temp, *exp);
+  if (overflow != NULL) {
+    null_decimal(overflow);
+  }
   for (unsigned int i = *exp == exp2 ? exp1 : exp2; i < *exp; ++i) {
     int ret = mul_dec_on_int(temp, 10, &temp);
     if (overflow != NULL) {
