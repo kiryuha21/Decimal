@@ -42,13 +42,17 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 
   null_decimal(result);
 
-  int ret = mul_without_signs(value_1, value_2, result);
+  s21_decimal rh, rl;
+
+  mul_without_signs(value_1, value_2, &rh, &rl);
+  set_exponent(&rl, get_exponent(&value_1) + get_exponent(&value_2));
+
+  int ret = try_add_overflow(&rl, rh);
   if (ret != OK) {
     return ret;
   }
 
-  set_exponent(result, get_exponent(&value_1) + get_exponent(&value_2));
-
+  *result = rl;
   int first_sign = get_sign(&value_1), second_sign = get_sign(&value_2);
   if (first_sign != second_sign) {
     set_sign(result, NEGATIVE);

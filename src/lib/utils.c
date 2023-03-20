@@ -126,28 +126,24 @@ int mul_dec_on_int(s21_decimal val, int num, s21_decimal* res) {
   return (int)overflow;
 }
 
-int mul_without_signs(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
-  null_decimal(res);
-  make_first_bigger_no_signs(&val1, &val2);
+int mul_without_signs(s21_decimal a, s21_decimal b, s21_decimal* rh,
+                      s21_decimal* rl) {
+  null_decimal(rh);
+  null_decimal(rl);
 
-  int ret = OK;
-  while (is_zero(&val2) == FALSE) {
-    if (right_shift(&val2) == 1) {
-      ret = add_same_signs(*res, val1, res);
-      if (ret != OK) {
-        return ret;
-      }
-    }
+  s21_decimal c = DEFAULT_DECIMAL;
 
-    if (is_zero(&val2) == FALSE) {
-      ret = left_shift(&val1);
-      if (ret != OK) {
-        return ret;
-      }
+  for (int i = 96; i > 0; --i) {
+    if (get_decimal_bit(&b, 0) == 1) {
+      add_same_signs(c, a, &c);
     }
+    right_shift_2n(&c, &b);
   }
 
-  return ret;
+  *rh = c;
+  *rl = b;
+
+  return OK;
 }
 
 int div_dec_on_int(s21_decimal val, int num, s21_decimal* res) {

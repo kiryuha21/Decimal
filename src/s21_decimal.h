@@ -73,7 +73,8 @@ int is_zero(const s21_decimal *val);
 int add_int_to_dec(s21_decimal val, int num, s21_decimal *res);
 int sub_int_fr_dec(s21_decimal val, int num, s21_decimal *res);
 int mul_dec_on_int(s21_decimal val, int num, s21_decimal *res);
-int mul_without_signs(s21_decimal val1, s21_decimal val2, s21_decimal *res);
+int mul_without_signs(s21_decimal a, s21_decimal b, s21_decimal *rh,
+                      s21_decimal *rl);
 int div_dec_on_int(s21_decimal val, int num, s21_decimal *res);
 int add_same_signs(s21_decimal value_1, s21_decimal value_2,
                    s21_decimal *result);
