@@ -101,3 +101,4 @@ int try_add_overflow(s21_decimal *val, s21_decimal overflow);
 int bank_round(s21_decimal *val, s21_decimal overflow);
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_H
+
