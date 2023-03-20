@@ -93,33 +93,17 @@ int add_int_to_dec(s21_decimal val, int num, s21_decimal* res) {
 }
 
 int mul_dec_on_int(s21_decimal val, int num, s21_decimal* res) {
-  null_decimal(res);
-  set_sign(res, get_sign(&val));
-  set_exponent(res, get_exponent(&val));
-  if (num < 0) {
-    num = -num;
-    change_sign(res);
+  res->bits[3] = val.bits[3];
+
+  unsigned long long bit_val, overflow = 0;
+
+  for (int i = 0; i <= 2; ++i) {
+    bit_val = (unsigned long long)val.bits[i] * num;
+    res->bits[i] = (bit_val + overflow) % OVERFLOW_BIT;
+    overflow = (bit_val + overflow) / OVERFLOW_BIT;
   }
 
-  int ret = OK;
-  while (num != 0) {
-    if (num % 2 == 1) {
-      ret = add_same_signs(*res, val, res);
-      if (ret != OK) {
-        return ret;
-      }
-    }
-
-    num /= 2;
-    if (num != 0) {
-      ret = left_shift(&val);
-      if (ret != OK) {
-        return ret;
-      }
-    }
-  }
-
-  return ret;
+  return (int)overflow;
 }
 
 int mul_without_signs(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
