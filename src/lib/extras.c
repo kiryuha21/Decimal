@@ -32,7 +32,7 @@ int s21_round(s21_decimal value, s21_decimal *result) {
   int exp = (int)get_exponent(&value);
   for (int i = 0; i < exp - 1; ++i) {
     s21_decimal mod;
-    scal_div(temp, 10, &temp, &mod);
+    div_dec_on_int(temp, 10, &temp, &mod);
     overflow = mod.bits[0] + overflow > 5;
   }
 
@@ -56,7 +56,7 @@ int s21_truncate(s21_decimal value, s21_decimal *result) {
   int exp = (int)get_exponent(&value);
   for (int i = 0; i < exp; ++i) {
     s21_decimal mod;
-    scal_div(*result, 10, result, &mod);
+    div_dec_on_int(*result, 10, result, &mod);
   }
   set_exponent(result, 0);
   set_sign(result, original_sign);

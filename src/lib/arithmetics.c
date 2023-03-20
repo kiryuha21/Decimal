@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "../s21_decimal.h"
 
 int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
@@ -6,17 +8,17 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   }
 
   unsigned int scale;
-  int ret = scale_decimals(&value_1, &value_2, &scale);
-
   s21_decimal overflow = {0};
+  int ret = scale_decimals(&value_1, &value_2, &scale, &overflow);
+
   if (ret == TOO_SMALL) {
     overflow = value_2;
     null_decimal(&value_2);
-    scale_decimals(&value_1, &value_2, &scale);
+    scale_decimals(&value_1, &value_2, &scale, NULL);
   } else if (ret == TOO_LARGE) {
     overflow = value_1;
     null_decimal(&value_1);
-    scale_decimals(&value_1, &value_2, &scale);
+    scale_decimals(&value_1, &value_2, &scale, NULL);
   }
 
   set_exponent(result, scale);

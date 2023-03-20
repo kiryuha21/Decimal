@@ -78,7 +78,21 @@ int is_zero(const s21_decimal* val) {
   return res;
 }
 
-int scal_mul(s21_decimal val, int num, s21_decimal* res) {
+int add_int_to_dec(s21_decimal val, int num, s21_decimal* res) {
+  null_decimal(res);
+
+  int overflow = num;
+
+  for (int i = 0; i <= 2; ++i) {
+    unsigned long long bit_val = val.bits[i] + overflow;
+    res->bits[i] = bit_val % OVERFLOW_BIT;
+    overflow = (int)(bit_val / OVERFLOW_BIT);
+  }
+
+  return overflow;
+}
+
+int mul_dec_on_int(s21_decimal val, int num, s21_decimal* res) {
   null_decimal(res);
   set_sign(res, get_sign(&val));
   set_exponent(res, get_exponent(&val));
@@ -134,7 +148,8 @@ int mul_without_signs(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
   return ret;
 }
 
-int scal_div(s21_decimal val, int num, s21_decimal* res, s21_decimal* mod) {
+int div_dec_on_int(s21_decimal val, int num, s21_decimal* res,
+                   s21_decimal* mod) {
   if (num == 0) {
     return ZERO_DIVISION;
   }
@@ -211,7 +226,8 @@ int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
   return ret;
 }
 
-int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp) {
+int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp,
+                   s21_decimal* overflow) {
   reduce_exponent(num1);
   reduce_exponent(num2);
 
@@ -222,8 +238,11 @@ int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp) {
     s21_decimal temp = *num2;
     set_exponent(&temp, *exp);
     for (unsigned int i = exp2; i < exp1; ++i) {
-      if (scal_mul(temp, 10, &temp) != OK) {
-        return TOO_SMALL;
+      int ret = mul_dec_on_int(temp, 10, &temp);
+      if (overflow == NULL && ret != OK) {
+        return ret;
+      } else if (overflow != NULL) {
+        add_int_to_dec(*overflow, ret, overflow);
       }
     }
     *num2 = temp;
@@ -232,8 +251,11 @@ int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp) {
     s21_decimal temp = *num1;
     set_exponent(&temp, *exp);
     for (unsigned int i = exp1; i < exp2; ++i) {
-      if (scal_mul(temp, 10, &temp) != OK) {
-        return TOO_LARGE;
+      int ret = mul_dec_on_int(temp, 10, &temp);
+      if (overflow == NULL && ret != OK) {
+        return ret;
+      } else if (overflow != NULL) {
+        add_int_to_dec(*overflow, ret, overflow);
       }
     }
     *num1 = temp;
@@ -265,7 +287,7 @@ void reduce_exponent(s21_decimal* val) {
   s21_decimal reduced = *val, mod = DEFAULT_DECIMAL;
 
   while (exp > 0 && is_zero(&mod) == TRUE && is_zero(&reduced) == FALSE) {
-    int ret = scal_div(reduced, 10, &reduced, &mod);
+    int ret = div_dec_on_int(reduced, 10, &reduced, &mod);
     if (ret != OK) {
       return;
     }
