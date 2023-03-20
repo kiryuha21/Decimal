@@ -217,31 +217,31 @@ int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp,
 
   unsigned int exp1 = get_exponent(num1), exp2 = get_exponent(num2);
 
+  s21_decimal temp;
   if (exp1 > exp2) {
+    temp = *num2;
     *exp = exp1;
-    s21_decimal temp = *num2;
-    set_exponent(&temp, *exp);
-    for (unsigned int i = exp2; i < exp1; ++i) {
-      int ret = mul_dec_on_int(temp, 10, &temp);
-      if (overflow == NULL && ret != OK) {
-        return ret;
-      } else if (overflow != NULL) {
-        add_int_to_dec(*overflow, ret, overflow);
-      }
-    }
     *num2 = temp;
   } else {
+    temp = *num1;
     *exp = exp2;
-    s21_decimal temp = *num1;
-    set_exponent(&temp, *exp);
-    for (unsigned int i = exp1; i < exp2; ++i) {
-      int ret = mul_dec_on_int(temp, 10, &temp);
-      if (overflow == NULL && ret != OK) {
-        return ret;
-      } else if (overflow != NULL) {
-        add_int_to_dec(*overflow, ret, overflow);
-      }
+    *num1 = temp;
+  }
+
+  set_exponent(&temp, *exp);
+  for (unsigned int i = *exp == exp2 ? exp1 : exp2; i < *exp; ++i) {
+    int ret = mul_dec_on_int(temp, 10, &temp);
+    if (overflow == NULL && ret != OK) {
+      return ret;
+    } else if (overflow != NULL) {
+      add_int_to_dec(*overflow, ret, overflow);
+      mul_dec_on_int(*overflow, 10, overflow);
     }
+  }
+
+  if (exp1 > exp2) {
+    *num2 = temp;
+  } else {
     *num1 = temp;
   }
 
@@ -383,22 +383,54 @@ void print_decimal(const s21_decimal* val) {
 
 // return TRUE if swapped
 int make_first_bigger_no_signs(s21_decimal* first, s21_decimal* second) {
+  int ret = is_bigger(*second, *first);
+  if (ret == TRUE) {
+    swap_decimals(first, second);
+  }
+  return ret;
+}
+
+int is_bigger(s21_decimal first, s21_decimal second) {
   for (int i = 2; i >= 0; --i) {
-    if (first->bits[i] > second->bits[i]) {
-      return FALSE;
-    } else if (second->bits[i] > first->bits[i]) {
-      swap_decimals(first, second);
+    if (first.bits[i] > second.bits[i]) {
       return TRUE;
+    } else if (second.bits[i] > first.bits[i]) {
+      return FALSE;
     }
   }
-
   return FALSE;
+}
+
+int is_equal(s21_decimal first, s21_decimal second) {
+  return is_bigger(first, second) == is_bigger(second, first) ? TRUE : FALSE;
+}
+
+int decimal_size_10(s21_decimal val) {
+  if (is_zero(&val) == TRUE) {
+    return 0;
+  }
+  s21_decimal temp = {1, 0, 0, 0};
+
+  int ret = OK;
+  int exp = 0;
+  while (is_bigger(val, temp) && ret == OK) {
+    ++exp;
+    ret = mul_dec_on_int(temp, 10, &temp);
+  }
+
+  if (is_equal(val, temp) && ret == OK) {
+    ++exp;
+  }
+
+  return exp;
 }
 
 int try_add_overflow(s21_decimal* val, s21_decimal overflow) {
   if (is_zero(&overflow)) {
     return OK;
   }
+
+  int size = decimal_size_10(overflow);
 
   return TOO_LARGE;
 }

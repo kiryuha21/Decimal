@@ -10,22 +10,15 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   unsigned int scale;
   s21_decimal overflow = {0};
   int ret = scale_decimals(&value_1, &value_2, &scale, &overflow);
-
-  if (ret == TOO_SMALL) {
-    overflow = value_2;
-    null_decimal(&value_2);
-    scale_decimals(&value_1, &value_2, &scale, NULL);
-  } else if (ret == TOO_LARGE) {
-    overflow = value_1;
-    null_decimal(&value_1);
-    scale_decimals(&value_1, &value_2, &scale, NULL);
+  if (ret != OK) {
+    return ret;
   }
 
   set_exponent(result, scale);
 
   if (get_sign(&value_1) == get_sign(&value_2)) {
     int additional_bit = add_same_signs(value_1, value_2, result);
-    overflow.bits[0] += additional_bit;
+    add_int_to_dec(overflow, additional_bit, &overflow);
     return try_add_overflow(result, overflow);
   }
 
