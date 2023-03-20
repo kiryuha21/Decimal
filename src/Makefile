@@ -17,6 +17,9 @@ SRC_H_FILES = s21_decimal.h
 TEST_C_FILES = tests/*.c
 TEST_H_FILES = tests/s21_decimal_testing.h
 
+ADD_TEST_C_FILES = add_tests/*.c
+ADD_TEST_H_FILES = add_tests/*.h
+
 TEST_TARGET  = s21_test
 
 LIB = s21_decimal.a
@@ -35,8 +38,8 @@ test: apply_clang $(SRC_C_FILES) $(SRC_H_FILES)
 	$(CC) $(FLAGS) $(SRC_C_FILES) $(SRC_H_FILES) $(TEST_C_FILES) $(TEST_H_FILES) -o $(TEST_TARGET) $(ADDITIONAL_FLAGS)
 	./$(TEST_TARGET)
 
-random_tests: apply_clang $(SRC_C_FILES) $(SRC_H_FILES)
-	$(CC) $(FLAGS) $(SRC_C_FILES) $(SRC_H_FILES) $(RANDOM_TESTS_FILE) $(TEST_H_FILES) -o $(TEST_TARGET) $(ADDITIONAL_FLAGS)
+add_test: apply_clang $(SRC_C_FILES) $(SRC_H_FILES)
+	$(CC) $(FLAGS) $(SRC_C_FILES) $(SRC_H_FILES) $(ADD_TEST_C_FILES) $(ADD_TEST_H_FILES) -o $(TEST_TARGET) $(ADDITIONAL_FLAGS)
 	./$(TEST_TARGET)
 
 gcov_report: apply_clang
