@@ -174,8 +174,15 @@ START_TEST(sub_with_mantissa_overflow) {
   s21_decimal a = {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0},
               b = {6, 0, 0, 0x00010000}, c = DEFAULT_DECIMAL;
 
-  ck_assert_int_eq(s21_sub(a, b, &c), OK);
-  ck_assert_uint_eq(c.bits[0], 0);
+  s21_decimal x = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0}};
+  s21_decimal y = {{6, 0, 0, 65536}};
+  s21_decimal z = {{0, 0, 0, 0}};
+  s21_add(x, y, &z);
+  char ourRes[1000],
+      expect[1000] = "0xFFFFFFFE 0xFFFFFFFF 0xFFFFFFFF 0x00000000";
+  snprintf(ourRes, sizeof(char) * 1000, "%.8x %.8x %.8x %.8x", z.bits[0],
+           z.bits[1], z.bits[2], z.bits[3]);
+  ck_assert_str_eq(ourRes, expect);
 }
 END_TEST
 
