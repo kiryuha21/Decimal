@@ -89,7 +89,9 @@ s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,
 int get_elder_bit_index(const s21_decimal *val);
 int get_first_integer_bit_index(const s21_decimal *val);
 int left_shift(s21_decimal *val);
-int right_shift(s21_decimal *val, int *mod);
+int left_shift_2n(s21_decimal *dh, s21_decimal *dl);
+int right_shift(s21_decimal *val);
+int right_shift_2n(s21_decimal *dh, s21_decimal *dl);
 void handle_decimal_inc(s21_decimal *val);
 float remove_elder_digit(float val);
 void print_decimal(const s21_decimal *val);

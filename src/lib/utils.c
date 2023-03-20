@@ -132,9 +132,7 @@ int mul_without_signs(s21_decimal val1, s21_decimal val2, s21_decimal* res) {
 
   int ret = OK;
   while (is_zero(&val2) == FALSE) {
-    int mod = 0;
-    right_shift(&val2, &mod);
-    if (mod == 1) {
+    if (right_shift(&val2) == 1) {
       ret = add_same_signs(*res, val1, res);
       if (ret != OK) {
         return ret;
@@ -316,14 +314,16 @@ int left_shift(s21_decimal* val) {
     overflow = next_overflow;
   }
 
-  if (overflow != 0) {
-    return TOO_LARGE;
-  }
-
-  return OK;
+  return overflow;
 }
 
-int right_shift(s21_decimal* val, int* mod) {
+int left_shift_2n(s21_decimal* dh, s21_decimal* dl) {
+  int ret = left_shift(dl);
+  left_shift(dh);
+  set_bit(&dh->bits[0], 0, ret);
+}
+
+int right_shift(s21_decimal* val) {
   int overflow = 0;
 
   for (int i = 2; i >= 0; --i) {
@@ -332,9 +332,13 @@ int right_shift(s21_decimal* val, int* mod) {
     overflow = next_overflow;
   }
 
-  *mod = overflow;
+  return overflow;
+}
 
-  return OK;
+int right_shift_2n(s21_decimal* dh, s21_decimal* dl) {
+  int ret = right_shift(dh);
+  right_shift(dl);
+  set_bit(&dl->bits[2], (BITS_IN_INT - 1), ret);
 }
 
 void handle_decimal_inc(s21_decimal* val) {
