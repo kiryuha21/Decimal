@@ -13,7 +13,7 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
 
   int exp = (int)get_exponent(&value);
   if (exp > 0 && get_sign(&value) == NEGATIVE) {
-    result->bits[get_elder_bit_index(&value)] += 1;
+    result->bits[get_elder_bit_index(result)] += 1;
   }
 
   return OK;

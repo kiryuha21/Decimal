@@ -1,4 +1,3 @@
-#include <float.h>
 #include <limits.h>
 #include <math.h>
 #include <stdio.h>
@@ -25,7 +24,7 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
     return ERROR;
   }
 
-  if (fabsf(src) < 1e-28) {
+  if (src != 0 && fabsf(src) < 1e-28) {
     null_decimal(dst);
     return ERROR;
   }
@@ -40,19 +39,23 @@ int s21_from_float_to_decimal(float src, s21_decimal *dst) {
     src = -src;
   }
 
-  // FIXME: wrong calculation of significant digits
-  float src_cp = src;
-  int significant_digits = 0;
-  for (; src_cp > FLT_EPSILON && significant_digits <= 7;
-       ++significant_digits) {
-    while (src_cp < 1) {
-      src_cp *= 10;
-    }
-    src_cp = remove_elder_digit(src_cp);
+  int integer_digits = 0;
+  for (float src_cp = src; src_cp > 1; src_cp /= 10, ++integer_digits) {
   }
 
-  int exp = 7 - significant_digits;
-  set_exponent(dst, exp);
+  int leading_zeros = 0;
+  for (; src != 0 && src < 1; src *= 10, ++leading_zeros) {
+  }
+
+  int significant_digits = snprintf(NULL, 0, "%g", src) - 1;
+  significant_digits = significant_digits > 7 ? 7 : significant_digits;
+
+  if (leading_zeros > 0) {
+    src /= 10;
+    --leading_zeros;
+  }
+  int exp = significant_digits - integer_digits;
+  set_exponent(dst, exp + leading_zeros);
 
   dst->bits[0] = (unsigned int)(src * powf(10, (float)exp));
 
