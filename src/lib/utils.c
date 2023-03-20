@@ -79,12 +79,12 @@ int is_zero(const s21_decimal* val) {
 }
 
 int add_int_to_dec(s21_decimal val, int num, s21_decimal* res) {
-  null_decimal(res);
+  null_decimal_val(res);
 
   int overflow = num;
 
   for (int i = 0; i <= 2; ++i) {
-    unsigned long long bit_val = val.bits[i] + overflow;
+    unsigned long long bit_val = (unsigned long long)val.bits[i] + overflow;
     res->bits[i] = bit_val % OVERFLOW_BIT;
     overflow = (int)(bit_val / OVERFLOW_BIT);
   }
@@ -93,7 +93,7 @@ int add_int_to_dec(s21_decimal val, int num, s21_decimal* res) {
 }
 
 int sub_int_fr_dec(s21_decimal val, int num, s21_decimal* res) {
-  null_decimal(res);
+  null_decimal_val(res);
 
   int overflow = num;
 
@@ -103,7 +103,7 @@ int sub_int_fr_dec(s21_decimal val, int num, s21_decimal* res) {
       bit_val = OVERFLOW_BIT + val.bits[i] - overflow;
       overflow = 1;
     } else {
-      bit_val = val.bits[i] - overflow;
+      bit_val = (unsigned long long)val.bits[i] - overflow;
       overflow = 0;
     }
     res->bits[i] = bit_val % OVERFLOW_BIT;
@@ -128,8 +128,8 @@ int mul_dec_on_int(s21_decimal val, int num, s21_decimal* res) {
 
 int mul_without_signs(s21_decimal a, s21_decimal b, s21_decimal* rh,
                       s21_decimal* rl) {
-  null_decimal(rh);
-  null_decimal(rl);
+  null_decimal_val(rh);
+  null_decimal_val(rl);
 
   s21_decimal c = DEFAULT_DECIMAL;
 
@@ -182,7 +182,8 @@ int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
   unsigned long long int bit_val;
   for (int i = 0; i < 3; ++i) {
     if (value_1.bits[i] >= value_2.bits[i] + overflow) {
-      bit_val = value_1.bits[i] - value_2.bits[i] - overflow;
+      bit_val =
+          (unsigned long long)value_1.bits[i] - value_2.bits[i] - overflow;
       overflow = 0;
     } else {
       bit_val = OVERFLOW_BIT - value_2.bits[i] + value_1.bits[i] - overflow;
@@ -235,6 +236,12 @@ int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp,
 
 void null_decimal(s21_decimal* val) {
   for (int i = 0; i < 4; ++i) {
+    val->bits[i] = 0;
+  }
+}
+
+void null_decimal_val(s21_decimal* val) {
+  for (int i = 0; i <= 2; ++i) {
     val->bits[i] = 0;
   }
 }
@@ -425,7 +432,7 @@ int try_add_overflow(s21_decimal* val, s21_decimal overflow) {
   int size = decimal_size_10(overflow);
 
   if (get_exponent(val) < size) {
-    return TOO_LARGE;
+    return get_sign(val) == POSITIVE ? TOO_LARGE : TOO_SMALL;
   }
 
   return bank_round(val, overflow);
@@ -433,15 +440,14 @@ int try_add_overflow(s21_decimal* val, s21_decimal overflow) {
 
 int bank_round(s21_decimal* val, s21_decimal overflow) {
   int exp_change = 0;
+  unsigned long long bit_val = 0;
   while (is_zero(&overflow) == FALSE) {
     ++exp_change;
 
     unsigned long long mod = div_dec_on_int(overflow, 10, &overflow);
 
-    // TODO: Make real bank round for last sym
     for (int i = 2; i >= 0; --i) {
-      unsigned long long bit_val =
-          (unsigned long long)(val->bits[i] + mod * OVERFLOW_BIT);
+      bit_val = (unsigned long long)(val->bits[i] + mod * OVERFLOW_BIT);
       val->bits[i] = bit_val / 10;
       mod = bit_val % 10;
     }
@@ -450,6 +456,15 @@ int bank_round(s21_decimal* val, s21_decimal overflow) {
   if (get_exponent(val) < exp_change) {
     return ERROR;
   }
+
+  // TODO: Make real bank round for last sym
+  if (bit_val % 10 >= 5 && exp_change != 0) {
+    int ret = add_int_to_dec(*val, 1, val);
+    if (ret != OK) {
+      return get_sign(val) == POSITIVE ? TOO_LARGE : TOO_SMALL;
+    }
+  }
+
   set_exponent(val, get_exponent(val) - exp_change);
   reduce_exponent(val);
 

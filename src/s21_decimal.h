@@ -83,6 +83,7 @@ int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
 int scale_decimals(s21_decimal *num1, s21_decimal *num2, unsigned int *scale,
                    s21_decimal *overflow);
 void null_decimal(s21_decimal *val);
+void null_decimal_val(s21_decimal *val);
 void swap_decimals(s21_decimal *val1, s21_decimal *val2);
 void reduce_exponent(s21_decimal *val);
 s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,

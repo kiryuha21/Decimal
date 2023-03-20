@@ -13,14 +13,14 @@ END_TEST
 START_TEST(add_too_lardge_inp) {
   s21_decimal a = MAX_DECIMAL, b = MAX_DECIMAL, c = DEFAULT_DECIMAL;
 
-  ck_assert_int_eq(s21_add(a, b, &c), ERROR);
+  ck_assert_int_eq(s21_add(a, b, &c), TOO_LARGE);
 }
 END_TEST
 
 START_TEST(add_too_small_inp) {
   s21_decimal a = MIN_DECIMAL, b = MIN_DECIMAL, c = DEFAULT_DECIMAL;
 
-  ck_assert_int_eq(s21_add(a, b, &c), ERROR);
+  ck_assert_int_eq(s21_add(a, b, &c), TOO_SMALL);
 }
 END_TEST
 
@@ -192,18 +192,15 @@ START_TEST(readme_example) {
 }
 END_TEST
 
-START_TEST(sub_with_mantissa_overflow) {
-  s21_decimal a = {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0},
-              b = {4, 0, 0, 0x00010000}, c = DEFAULT_DECIMAL;
+START_TEST(add_with_mantissa_overflow) {
+  s21_decimal a = {0XFFFFFFF0, 0XFFFFFFFF, 0XFFFFFFFF, 0},
+              b = {4, 0, 0, 0X00010000}, c = DEFAULT_DECIMAL;
 
-  s21_decimal x = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0}};
-  s21_decimal y = {{6, 0, 0, 65536}};
-  s21_decimal z = {{0, 0, 0, 0}};
-  s21_add(x, y, &z);
-  char ourRes[1000], expect[1000] = "0XFFFFFFFF 0XFFFFFFFF 0XFFFFFFFF 00000000";
-  snprintf(ourRes, sizeof(char) * 1000, "%#.8X %#.8X %#.8X %#.8X", z.bits[0],
-           z.bits[1], z.bits[2], z.bits[3]);
-  ck_assert_str_eq(ourRes, expect);
+  ck_assert_int_eq(s21_add(a, b, &c), OK);
+  ck_assert_int_eq(c.bits[3], 0);
+  ck_assert_uint_eq(c.bits[0], 0xFFFFFFF0);
+  ck_assert_uint_eq(c.bits[1], 0xFFFFFFFF);
+  ck_assert_uint_eq(c.bits[2], 0xFFFFFFFF);
 }
 END_TEST
 
@@ -238,7 +235,7 @@ Suite *get_arithmetics_suite() {
   tcase_add_test(t_case, sub_euqal_negative_number);
   tcase_add_test(t_case, sub_euqal_positive_number);
   tcase_add_test(t_case, add_neg_neg);
-  tcase_add_test(t_case, sub_with_mantissa_overflow);
+  tcase_add_test(t_case, add_with_mantissa_overflow);
   tcase_add_test(t_case, readme_example);
 
   suite_add_tcase(s, t_case);
