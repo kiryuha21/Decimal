@@ -4,9 +4,7 @@
 
 int s21_is_less(s21_decimal first, s21_decimal second) {
   unsigned int scale;
-  if (scale_decimals(&first, &second, &scale, NULL) != OK) {
-    return FALSE;
-  }
+  scale_decimals(&first, &second, &scale, NULL);
 
   int first_sign = get_sign(&first);
   int second_sign = get_sign(&second);
@@ -36,9 +34,7 @@ int s21_is_less_or_equal(s21_decimal first, s21_decimal second) {
 
 int s21_is_greater(s21_decimal first, s21_decimal second) {
   unsigned int scale;
-  if (scale_decimals(&first, &second, &scale, NULL) != OK) {
-    return FALSE;
-  }
+  scale_decimals(&first, &second, &scale, NULL);
 
   int first_sign = get_sign(&first);
   int second_sign = get_sign(&second);
@@ -68,9 +64,7 @@ int s21_is_greater_or_equal(s21_decimal first, s21_decimal second) {
 
 int s21_is_equal(s21_decimal first, s21_decimal second) {
   unsigned int scale;
-  if (scale_decimals(&first, &second, &scale, NULL) != OK) {
-    return FALSE;
-  }
+  scale_decimals(&first, &second, &scale, NULL);
 
   for (int i = 0; i < 3; ++i) {
     if (first.bits[i] != second.bits[i]) {

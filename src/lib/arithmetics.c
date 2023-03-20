@@ -10,11 +10,9 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   unsigned int scale;
   s21_decimal overflow = {0};
   int ret = scale_decimals(&value_1, &value_2, &scale, &overflow);
-  if (ret != OK) {
-    return ret;
-  }
 
   set_exponent(result, scale);
+  set_sign(result, get_sign(&value_1));
 
   if (get_sign(&value_1) == get_sign(&value_2)) {
     int additional_bit = add_same_signs(value_1, value_2, result);
@@ -22,7 +20,13 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     return try_add_overflow(result, overflow);
   }
 
-  return sub_diff_signs(value_1, value_2, result);
+  if (make_first_bigger_no_signs(&value_1, &value_2) == TRUE) {
+    change_sign(result);
+  }
+
+  int additional_bit = sub_diff_signs(value_1, value_2, result);
+  sub_int_fr_dec(overflow, additional_bit, &overflow);
+  return try_add_overflow(result, overflow);
 }
 
 int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {

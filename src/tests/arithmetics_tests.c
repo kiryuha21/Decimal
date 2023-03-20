@@ -170,6 +170,28 @@ START_TEST(sub_euqal_positive_number) {
 }
 END_TEST
 
+START_TEST(add_neg_neg) {
+  s21_decimal a = {10, 0, 0, NEGATIVE_DECIMAL}, b = {7, 0, 0, NEGATIVE_DECIMAL},
+              c = DEFAULT_DECIMAL;
+
+  ck_assert_int_eq(s21_add(a, b, &c), OK);
+  ck_assert_int_eq(c.bits[3], NEGATIVE_DECIMAL);
+  ck_assert_uint_eq(c.bits[0], 17);
+}
+END_TEST
+
+START_TEST(readme_example) {
+  s21_decimal a = {0XFFFFFFFF, 0XFFFFFFFF, 0XFFFFFFFF, 0},
+              b = {6, 0, 0, 0X00010000}, c = DEFAULT_DECIMAL;
+
+  ck_assert_int_eq(s21_sub(a, b, &c), OK);
+  ck_assert_int_eq(c.bits[3], 0);
+  ck_assert_uint_eq(c.bits[0], 0xFFFFFFFE);
+  ck_assert_uint_eq(c.bits[1], 0xFFFFFFFF);
+  ck_assert_uint_eq(c.bits[2], 0xFFFFFFFF);
+}
+END_TEST
+
 START_TEST(sub_with_mantissa_overflow) {
   s21_decimal a = {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0},
               b = {4, 0, 0, 0x00010000}, c = DEFAULT_DECIMAL;
@@ -215,7 +237,9 @@ Suite *get_arithmetics_suite() {
   tcase_add_test(t_case, sub_first_negative_second_positive);
   tcase_add_test(t_case, sub_euqal_negative_number);
   tcase_add_test(t_case, sub_euqal_positive_number);
+  tcase_add_test(t_case, add_neg_neg);
   tcase_add_test(t_case, sub_with_mantissa_overflow);
+  tcase_add_test(t_case, readme_example);
 
   suite_add_tcase(s, t_case);
 

@@ -523,10 +523,10 @@ Suite *suite_s21_is_equal() {
 }
 
 START_TEST(decimal_is_greater_or_equal_1) {
-  s21_decimal x = {{0, 0, 1, 0}};
-  s21_decimal y = {{0, 0, 2, 0}};
+  s21_decimal x = {{0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x001C0000}};
+  s21_decimal y = {{10, 0, 0, 0}};
   int ourRes = s21_is_greater_or_equal(x, y);
-  int expect = 0;
+  int expect = TRUE;
   ck_assert_int_eq(ourRes, expect);
 }
 END_TEST

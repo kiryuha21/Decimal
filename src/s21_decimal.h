@@ -71,6 +71,7 @@ unsigned int get_exponent(const s21_decimal *val);
 void set_exponent(s21_decimal *val, unsigned int exp);
 int is_zero(const s21_decimal *val);
 int add_int_to_dec(s21_decimal val, int num, s21_decimal *res);
+int sub_int_fr_dec(s21_decimal val, int num, s21_decimal *res);
 int mul_dec_on_int(s21_decimal val, int num, s21_decimal *res);
 int mul_without_signs(s21_decimal val1, s21_decimal val2, s21_decimal *res);
 int div_dec_on_int(s21_decimal val, int num, s21_decimal *res);

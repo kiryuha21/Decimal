@@ -3,9 +3,7 @@
 #include "s21_decimal.h"
 
 int main() {
-  s21_decimal a = {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0x00010000},
-              b = {6, 0, 0, 0x00020000}, c = DEFAULT_DECIMAL;
-  int ret = s21_add(a, b, &c);
-  printf("ret - %i\n", ret);
-  print_decimal(&c);
+  s21_decimal a = {10, 0, 0, NEGATIVE_DECIMAL}, b = {7, 0, 0, NEGATIVE_DECIMAL},
+              c = DEFAULT_DECIMAL;
+  s21_sub(a, b, &c);
 }

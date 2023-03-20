@@ -92,6 +92,26 @@ int add_int_to_dec(s21_decimal val, int num, s21_decimal* res) {
   return overflow;
 }
 
+int sub_int_fr_dec(s21_decimal val, int num, s21_decimal* res) {
+  null_decimal(res);
+
+  int overflow = num;
+
+  for (int i = 0; i <= 2; ++i) {
+    unsigned long long bit_val;
+    if (overflow > val.bits[i]) {
+      bit_val = OVERFLOW_BIT + val.bits[i] - overflow;
+      overflow = 1;
+    } else {
+      bit_val = val.bits[i] - overflow;
+      overflow = 0;
+    }
+    res->bits[i] = bit_val % OVERFLOW_BIT;
+  }
+
+  return overflow;
+}
+
 int mul_dec_on_int(s21_decimal val, int num, s21_decimal* res) {
   res->bits[3] = val.bits[3];
 
@@ -164,13 +184,6 @@ int add_same_signs(s21_decimal value_1, s21_decimal value_2,
 
 int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
                    s21_decimal* result) {
-  int ret = OK;
-  set_sign(result, get_sign(&value_1));
-
-  if (make_first_bigger_no_signs(&value_1, &value_2) == TRUE) {
-    change_sign(result);
-  }
-
   unsigned long long int overflow = 0;
   unsigned long long int bit_val;
   for (int i = 0; i < 3; ++i) {
@@ -183,11 +196,8 @@ int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
     }
     result->bits[i] = bit_val;
   }
-  if (overflow != 0) {
-    ret = TOO_LARGE;
-  }
-  reduce_exponent(result);
-  return ret;
+
+  return (int)overflow;
 }
 
 int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp,
@@ -211,9 +221,7 @@ int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp,
   set_exponent(&temp, *exp);
   for (unsigned int i = *exp == exp2 ? exp1 : exp2; i < *exp; ++i) {
     int ret = mul_dec_on_int(temp, 10, &temp);
-    if (overflow == NULL && ret != OK) {
-      return ret;
-    } else if (overflow != NULL) {
+    if (overflow != NULL) {
       mul_dec_on_int(*overflow, 10, overflow);
       add_int_to_dec(*overflow, ret, overflow);
     }
@@ -221,11 +229,11 @@ int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp,
 
   if (exp1 > exp2) {
     *num2 = temp;
+    return TOO_SMALL;
   } else {
     *num1 = temp;
+    return TOO_LARGE;
   }
-
-  return OK;
 }
 
 void null_decimal(s21_decimal* val) {
@@ -407,6 +415,7 @@ int decimal_size_10(s21_decimal val) {
 
 int try_add_overflow(s21_decimal* val, s21_decimal overflow) {
   if (is_zero(&overflow)) {
+    reduce_exponent(val);
     return OK;
   }
 
@@ -439,6 +448,7 @@ int bank_round(s21_decimal* val, s21_decimal overflow) {
     return ERROR;
   }
   set_exponent(val, get_exponent(val) - exp_change);
+  reduce_exponent(val);
 
   return OK;
 }
