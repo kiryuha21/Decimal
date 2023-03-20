@@ -1546,7 +1546,7 @@ END_TEST
 START_TEST(test_s21_floor_7) {
   s21_decimal num = {{21, 0, 0, NEGATIVE_DECIMAL}};
   s21_decimal res = {{3, 0, 0, NEGATIVE_DECIMAL}};
-  set_exponent(&num, 1);
+  set_decimal_exponent(&num, 1);
   int error = 0;
   error = s21_floor(num, &num);
   ck_assert_int_eq(num.bits[0], res.bits[0]);
@@ -1612,7 +1612,7 @@ Suite *suite_s21_floor() {
 
 START_TEST(test_from_dec_to_float_1) {
   s21_decimal x = {{15008, 0, 0, 0}};
-  set_exponent(&x, 3);
+  set_decimal_exponent(&x, 3);
   float res1;
   int n1 = s21_from_decimal_to_float(x, &res1);
   float res2 = 15.008;
@@ -1623,7 +1623,7 @@ END_TEST
 
 START_TEST(test_from_dec_to_float_2) {
   s21_decimal x = {{15008, 0, 0, 0}};
-  set_exponent(&x, 3);
+  set_decimal_exponent(&x, 3);
   set_bit(&x.bits[3], 31, 1);
   float res1;
   int n1 = s21_from_decimal_to_float(x, &res1);
@@ -1635,7 +1635,7 @@ END_TEST
 
 START_TEST(test_from_dec_to_float_3) {
   s21_decimal x = {{15008, 0, 0, 0}};
-  set_exponent(&x, 3);
+  set_decimal_exponent(&x, 3);
   set_bit(&x.bits[3], 31, 1);
   float res1 = 0;
   int n1 = s21_from_decimal_to_float(x, NULL);
@@ -1647,7 +1647,7 @@ END_TEST
 
 START_TEST(test_from_dec_to_float_4) {
   s21_decimal x = {{1505345008, 0, 0, 0}};
-  set_exponent(&x, 3);
+  set_decimal_exponent(&x, 3);
   set_bit(&x.bits[3], 31, 1);
   float res1;
   int n1 = s21_from_decimal_to_float(x, &res1);
@@ -1673,7 +1673,7 @@ Suite *suite_s21_from_decimal_to_float() {
 
 START_TEST(test_from_dec_to_int_1) {
   s21_decimal x = {{150, 13658, 0, 0}};
-  set_exponent(&x, 10);
+  set_decimal_exponent(&x, 10);
   set_bit(&x.bits[3], 31, 1);
   int y;
   s21_from_decimal_to_int(x, &y);
@@ -1683,7 +1683,7 @@ END_TEST
 
 START_TEST(test_from_dec_to_int_2) {
   s21_decimal x = {{150, 13658, 0, 0}};
-  set_exponent(&x, 10);
+  set_decimal_exponent(&x, 10);
   int y;
   s21_from_decimal_to_int(x, &y);
   ck_assert_int_eq(y, 5866);
@@ -1692,7 +1692,7 @@ END_TEST
 
 START_TEST(test_from_dec_to_int_3) {
   s21_decimal x = {{150, 13658, 155, 0}};
-  set_exponent(&x, 10);
+  set_decimal_exponent(&x, 10);
   int y = 0;
   s21_from_decimal_to_int(x, &y);
   ck_assert_int_eq(y, 0);
@@ -1701,7 +1701,7 @@ END_TEST
 
 START_TEST(test_from_dec_to_int_4) {
   s21_decimal x = {{2100000000, 0, 0, 0}};
-  set_exponent(&x, 0);
+  set_decimal_exponent(&x, 0);
   int y;
   s21_from_decimal_to_int(x, &y);
   ck_assert_int_eq(y, 2100000000);
@@ -1710,7 +1710,7 @@ END_TEST
 
 START_TEST(test_from_dec_to_int_5) {
   s21_decimal x = {{2100000000, 0, 0, 0}};
-  set_exponent(&x, 0);
+  set_decimal_exponent(&x, 0);
   set_bit(&x.bits[3], 31, 1);
   int y;
   s21_from_decimal_to_int(x, &y);
@@ -1720,7 +1720,7 @@ END_TEST
 
 START_TEST(test_from_dec_to_int_6) {
   s21_decimal x = {{3100000000, 0, 0, 0}};
-  set_exponent(&x, 0);
+  set_decimal_exponent(&x, 0);
   set_bit(&x.bits[3], 31, 1);
   int y = 0;
   s21_from_decimal_to_int(x, &y);
@@ -1729,7 +1729,7 @@ START_TEST(test_from_dec_to_int_6) {
 
 START_TEST(test_from_dec_to_int_7) {
   s21_decimal x = {{3100000000, 0, 0, 0}};
-  set_exponent(&x, 0);
+  set_decimal_exponent(&x, 0);
   int y;
   int n1 = s21_from_decimal_to_int(x, &y);
   ck_assert_int_eq(n1, 1);
@@ -1738,7 +1738,7 @@ END_TEST
 
 START_TEST(test_from_dec_to_int_8) {
   s21_decimal x = {{9, 0, 0, 0}};
-  set_exponent(&x, 1);
+  set_decimal_exponent(&x, 1);
   int y;
   s21_from_decimal_to_int(x, &y);
   ck_assert_int_eq(y, 0);
@@ -1747,7 +1747,7 @@ END_TEST
 
 START_TEST(test_from_dec_to_int_9) {
   s21_decimal x = {{9, 0, 0, 0}};
-  set_exponent(&x, 1);
+  set_decimal_exponent(&x, 1);
   int y = s21_from_decimal_to_int(x, NULL);
   ck_assert_int_eq(y, 1);
 }

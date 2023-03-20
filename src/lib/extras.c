@@ -11,8 +11,8 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
 
   s21_truncate(value, result);
 
-  int exp = (int)get_exponent(&value);
-  if (exp > 0 && get_sign(&value) == NEGATIVE) {
+  int exp = (int)get_decimal_exponent(&value);
+  if (exp > 0 && get_decimal_sign(&value) == NEGATIVE) {
     result->bits[get_elder_bit_index(&value)] += 1;
   }
 
@@ -25,11 +25,12 @@ int s21_round(s21_decimal value, s21_decimal *result) {
   if (result == NULL) {
     return ERROR;
   }
-  reduce_exponent(&value);
+  big_decimal big_val = convert(value);
+  reduce_exponent(&big_val);
 
   int overflow = 0;
-  s21_decimal temp = value;
-  int exp = (int)get_exponent(&value);
+  big_decimal temp = big_val;
+  int exp = (int)get_exponent(&big_val);
   for (int i = 0; i < exp - 1; ++i) {
     int ret = div_dec_on_int(temp, 10, &temp);
     overflow = ret + overflow > 5;
@@ -48,18 +49,20 @@ int s21_truncate(s21_decimal value, s21_decimal *result) {
     return ERROR;
   }
 
-  int original_sign = get_sign(&value);
-  reduce_exponent(&value);
+  big_decimal val = convert(value), res = convert(*result);
+
+  int original_sign = get_sign(&val);
+  reduce_exponent(&val);
   *result = value;
 
-  int exp = (int)get_exponent(&value);
+  int exp = (int)get_exponent(&val);
   for (int i = 0; i < exp; ++i) {
     div_dec_on_int(*result, 10, result);
   }
-  set_exponent(result, 0);
-  set_sign(result, original_sign);
+  set_exponent(&res, 0);
+  set_sign(&res, original_sign);
 
-  return OK;
+  return rconvert(res, result);
 }
 
 int s21_negate(s21_decimal value, s21_decimal *result) {
@@ -67,11 +70,11 @@ int s21_negate(s21_decimal value, s21_decimal *result) {
     return ERROR;
   }
 
-  *result = value;
+  big_decimal res = convert(value);
 
-  if (!is_zero(result)) {
-    change_sign(result);
+  if (!is_zero(&res)) {
+    change_sign(&res);
   }
 
-  return OK;
+  return rconvert(res, result);
 }

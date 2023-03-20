@@ -13,9 +13,21 @@
     { 0, 0, 0, 0 }      \
   }
 
+#define BOT_BIT 0
+#define TOP_BIT 2
+#define SPEC_BIT 3
+
 typedef struct s21_decimal {
   unsigned int bits[4];
 } s21_decimal;
+
+#define BIG_BOT_BIT 0
+#define BIG_TOP_BIT 4
+#define BIG_SPEC_BIT 5
+
+typedef struct big_decimal {
+  unsigned int bits[6];
+} big_decimal;
 
 // common for all functions except compare ones
 #define OK 0
@@ -45,10 +57,6 @@ int s21_round(s21_decimal value, s21_decimal *result);
 int s21_truncate(s21_decimal value, s21_decimal *result);
 int s21_negate(s21_decimal value, s21_decimal *result);
 
-// return codes for 6 functions below
-#define FALSE 0
-#define TRUE 1
-
 // comparisons.c
 int s21_is_less(s21_decimal, s21_decimal);
 int s21_is_less_or_equal(s21_decimal, s21_decimal);
@@ -57,11 +65,15 @@ int s21_is_greater_or_equal(s21_decimal, s21_decimal);
 int s21_is_equal(s21_decimal, s21_decimal);
 int s21_is_not_equal(s21_decimal, s21_decimal);
 
+// return codes for 6 functions upper
+#define FALSE 0
+#define TRUE 1
+
 // utils
 int get_bit(unsigned int val, int index);
-int get_decimal_bit(const s21_decimal *val, int index);
+int get_decimal_bit(const big_decimal *val, int index);
 void set_bit(unsigned int *val, int index, int bit);
-void set_decimal_bit(s21_decimal *val, int index, int bit);
+void set_decimal_bit(big_decimal *val, int index, int bit);
 int get_higher_bit(unsigned int val);
 int decimal_size(s21_decimal val);
 int get_sign(const s21_decimal *val);
@@ -86,10 +98,16 @@ void swap_decimals(s21_decimal *val1, s21_decimal *val2);
 void reduce_exponent(s21_decimal *val);
 s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,
                            unsigned int bit2, unsigned int bit3);
+big_decimal create_big_decimal(unsigned int bit0, unsigned int bit1,
+                               unsigned int bit2, unsigned int bit3,
+                               unsigned int bit4, unsigned int bit5);
+big_decimal convert(s21_decimal val);
+int convertable(big_decimal *val);
+int rconvert(big_decimal val, s21_decimal *res);
 int get_elder_bit_index(const s21_decimal *val);
 int get_first_integer_bit_index(const s21_decimal *val);
-int left_shift(s21_decimal *val);
-int right_shift(s21_decimal *val, int *mod);
+int left_shift(big_decimal *val);
+int right_shift(big_decimal *val, int *mod);
 void handle_decimal_inc(s21_decimal *val);
 float remove_elder_digit(float val);
 void print_decimal(const s21_decimal *val);
