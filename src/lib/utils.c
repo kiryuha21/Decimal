@@ -142,7 +142,7 @@ int div_dec_on_int(s21_decimal val, int num, s21_decimal* res) {
   for (int i = 2; i >= 0; --i) {
     bit_val = (unsigned long long)(val.bits[i] + overflow * OVERFLOW_BIT);
     res->bits[i] = bit_val / num;
-    overflow = bit_val - res->bits[i] * num;
+    overflow = bit_val % num;
   }
 
   return (int)overflow;
@@ -414,12 +414,31 @@ int try_add_overflow(s21_decimal* val, s21_decimal overflow) {
 
   if (get_exponent(val) < size) {
     return TOO_LARGE;
-  } else {
-    for (unsigned int i = get_exponent(val); i <= size; ++i) {
-      div_dec_on_int(*val, 10, val);
-      int mod = div_dec_on_int(overflow, 10, &overflow);
-      val->bits[2] += mod;
-    }
-    return OK;
   }
+
+  return bank_round(val, overflow);
+}
+
+int bank_round(s21_decimal* val, s21_decimal overflow) {
+  int exp_change = 0;
+  while (is_zero(&overflow) == FALSE) {
+    ++exp_change;
+
+    unsigned long long mod = div_dec_on_int(overflow, 10, &overflow);
+
+    // TODO: Make real bank round for last sym
+    for (int i = 2; i >= 0; --i) {
+      unsigned long long bit_val =
+          (unsigned long long)(val->bits[i] + mod * OVERFLOW_BIT);
+      val->bits[i] = bit_val / 10;
+      mod = bit_val % 10;
+    }
+  }
+
+  if (get_exponent(val) < exp_change) {
+    return ERROR;
+  }
+  set_exponent(val, get_exponent(val) - exp_change);
+
+  return OK;
 }
