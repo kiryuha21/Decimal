@@ -6,10 +6,10 @@ int s21_is_less(s21_decimal first, s21_decimal second) {
   unsigned int scale;
   scale_decimals(&first, &second, &scale, NULL);
 
-  int first_sign = get_sign(&fir);
-  int second_sign = get_sign(&sec);
+  int first_sign = get_sign(&first);
+  int second_sign = get_sign(&second);
 
-  if (!is_zero(&fir) && !is_zero(&sec)) {
+  if (!is_zero(&first) && !is_zero(&second)) {
     if (first_sign == POSITIVE && second_sign == NEGATIVE) {
       return FALSE;
     } else if (first_sign == NEGATIVE && second_sign == POSITIVE) {
@@ -17,10 +17,10 @@ int s21_is_less(s21_decimal first, s21_decimal second) {
     }
   }
 
-  for (int i = BIG_TOP_BIT; i >= BIG_BOT_BIT; --i) {
-    if (fir.bits[i] < sec.bits[i]) {
+  for (int i = 2; i >= 0; --i) {
+    if (first.bits[i] < second.bits[i]) {
       return first_sign == POSITIVE ? TRUE : FALSE;
-    } else if (fir.bits[i] > sec.bits[i]) {
+    } else if (first.bits[i] > second.bits[i]) {
       return first_sign == POSITIVE ? FALSE : TRUE;
     }
   }
@@ -36,10 +36,10 @@ int s21_is_greater(s21_decimal first, s21_decimal second) {
   unsigned int scale;
   scale_decimals(&first, &second, &scale, NULL);
 
-  int first_sign = get_sign(&fir);
-  int second_sign = get_sign(&sec);
+  int first_sign = get_sign(&first);
+  int second_sign = get_sign(&second);
 
-  if (!is_zero(&fir) && !is_zero(&sec)) {
+  if (!is_zero(&first) && !is_zero(&second)) {
     if (first_sign == POSITIVE && second_sign == NEGATIVE) {
       return TRUE;
     } else if (first_sign == NEGATIVE && second_sign == POSITIVE) {
@@ -47,10 +47,10 @@ int s21_is_greater(s21_decimal first, s21_decimal second) {
     }
   }
 
-  for (int i = BIG_TOP_BIT; i >= BIG_BOT_BIT; --i) {
-    if (fir.bits[i] > sec.bits[i]) {
+  for (int i = 2; i >= 0; --i) {
+    if (first.bits[i] > second.bits[i]) {
       return first_sign == POSITIVE ? TRUE : FALSE;
-    } else if (fir.bits[i] < sec.bits[i]) {
+    } else if (first.bits[i] < second.bits[i]) {
       return first_sign == POSITIVE ? FALSE : TRUE;
     }
   }
@@ -66,13 +66,13 @@ int s21_is_equal(s21_decimal first, s21_decimal second) {
   unsigned int scale;
   scale_decimals(&first, &second, &scale, NULL);
 
-  for (int i = BOT_BIT; i <= TOP_BIT; ++i) {
+  for (int i = 0; i < 3; ++i) {
     if (first.bits[i] != second.bits[i]) {
       return FALSE;
     }
   }
 
-  if (!is_zero(&fir) && fir.bits[BIG_SPEC_BIT] != sec.bits[BIG_SPEC_BIT]) {
+  if (!is_zero(&first) && first.bits[3] != second.bits[3]) {
     return FALSE;
   }
 
