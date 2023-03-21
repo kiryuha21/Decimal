@@ -19,8 +19,6 @@ int s21_floor(s21_decimal value, s21_decimal *result) {
   return OK;
 }
 
-// TODO: using upper boundary rounding if pure 5
-//  not sure if it is correct
 int s21_round(s21_decimal value, s21_decimal *result) {
   if (result == NULL) {
     return ERROR;
