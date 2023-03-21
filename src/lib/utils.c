@@ -170,29 +170,35 @@ int div_dec_on_int(s21_decimal val, int num, s21_decimal* res) {
   return (int)overflow;
 }
 
-int div_without_signs(s21_decimal a, s21_decimal b, s21_decimal* rh,
-                      s21_decimal* rl) {
-  if (is_zero(&b) == TRUE) {
-    return ZERO_DIVISION;
+int is_bigger_2n(s21_2n_decimal first, s21_2n_decimal second) {
+  for (int i = 5; i >= 0; --i) {
+    if (first.bits[i] > second.bits[i]) {
+      return TRUE;
+    } else if (second.bits[i] > first.bits[i]) {
+      return FALSE;
+    }
   }
+  return FALSE;
+}
 
-  null_decimal_val(rh);
+int div_without_signs(s21_2n_decimal a, s21_2n_decimal b, s21_2n_decimal* rh,
+                      s21_2n_decimal* rl) {
   *rl = a;
 
-  s21_decimal c = DEFAULT_DECIMAL;
+  s21_2n_decimal c = DEFAULT_DECIMAL;
 
-  for (int i = 95; i >= 0; --i) {
-    left_shift_2n(rh, rl);
-    if (is_bigger(b, *rh) == TRUE) {
-      set_decimal_bit(&c, i, 0);
+  for (int i = 191; i >= 0; --i) {
+    left_shift_4n(rh, rl);
+    if (is_bigger_2n(b, *rh) == TRUE) {
+      set_bit(&c.bits[i / 32], i % 32, 0);
     } else {
-      set_decimal_bit(&c, i, 1);
-      sub_diff_signs(*rh, b, rh);
+      set_bit(&c.bits[i / 32], i % 32, 1);
+      sub_diff_signs_2n(*rh, b, rh);
     }
   }
 
   *rl = c;
-  swap_decimals(rl, rh);
+  swap_decimals_2n(rl, rh);
 
   return OK;
 }
@@ -216,6 +222,25 @@ int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
   unsigned long long int overflow = 0;
   unsigned long long int bit_val;
   for (int i = 0; i < 3; ++i) {
+    if (value_1.bits[i] >= value_2.bits[i] + overflow) {
+      bit_val =
+          (unsigned long long)value_1.bits[i] - value_2.bits[i] - overflow;
+      overflow = 0;
+    } else {
+      bit_val = OVERFLOW_BIT - value_2.bits[i] + value_1.bits[i] - overflow;
+      overflow = 1;
+    }
+    result->bits[i] = bit_val;
+  }
+
+  return (int)overflow;
+}
+
+int sub_diff_signs_2n(s21_2n_decimal value_1, s21_2n_decimal value_2,
+                      s21_2n_decimal* result) {
+  unsigned long long int overflow = 0;
+  unsigned long long int bit_val;
+  for (int i = 0; i < 6; ++i) {
     if (value_1.bits[i] >= value_2.bits[i] + overflow) {
       bit_val =
           (unsigned long long)value_1.bits[i] - value_2.bits[i] - overflow;
@@ -269,6 +294,54 @@ int scale_decimals(s21_decimal* num1, s21_decimal* num2, unsigned int* exp,
   }
 }
 
+s21_2n_decimal convert(s21_decimal val) {
+  s21_2n_decimal res = DEFAULT_DECIMAL;
+  for (int i = 0; i < 3; ++i) {
+    res.bits[i] = val.bits[i];
+  }
+  res.bits[6] = val.bits[3];
+  return res;
+}
+
+s21_decimal rconvert(s21_2n_decimal val) {
+  s21_decimal res = DEFAULT_DECIMAL;
+  for (int i = 0; i < 3; ++i) {
+    res.bits[i] = val.bits[i];
+  }
+  res.bits[3] = val.bits[6];
+  return res;
+}
+
+s21_decimal rsconvert(s21_2n_decimal val) {
+  s21_decimal res = DEFAULT_DECIMAL;
+  for (int i = 3; i < 6; ++i) {
+    res.bits[i - 3] = val.bits[i];
+  }
+  return res;
+}
+
+int scale_2n_decimal(s21_2n_decimal* val1, s21_2n_decimal* val2,
+                     unsigned int* exp) {
+  s21_decimal overflow, value1 = rconvert(*val1), value2 = rconvert(*val2);
+  int res = scale_decimals(&value1, &value2, exp, &overflow);
+  for (int i = 0; i < 3; ++i) {
+    val1->bits[i] = value1.bits[i];
+    val2->bits[i] = value2.bits[i];
+  }
+
+  if (res == TOO_LARGE) {
+    for (int i = 0; i < 3; ++i) {
+      val1->bits[i + 3] = overflow.bits[i];
+    }
+  } else {
+    for (int i = 0; i < 3; ++i) {
+      val2->bits[i + 3] = overflow.bits[i];
+    }
+  }
+
+  return res;
+}
+
 void null_decimal(s21_decimal* val) {
   for (int i = 0; i < 4; ++i) {
     val->bits[i] = 0;
@@ -283,6 +356,12 @@ void null_decimal_val(s21_decimal* val) {
 
 void swap_decimals(s21_decimal* val1, s21_decimal* val2) {
   s21_decimal cp = *val2;
+  *val2 = *val1;
+  *val1 = cp;
+}
+
+void swap_decimals_2n(s21_2n_decimal* val1, s21_2n_decimal* val2) {
+  s21_2n_decimal cp = *val2;
   *val2 = *val1;
   *val1 = cp;
 }
@@ -358,8 +437,29 @@ int left_shift(s21_decimal* val) {
 
 int left_shift_2n(s21_decimal* dh, s21_decimal* dl) {
   int ret = left_shift(dl);
-  left_shift(dh);
+  int res = left_shift(dh);
   set_bit(&dh->bits[0], 0, ret);
+  return res;
+}
+
+int left_shift_2n_dec(s21_2n_decimal* val) {
+  int overflow = 0;
+
+  for (int i = 0; i < 6; ++i) {
+    int next_overflow =
+        get_bit(val->bits[i], (BITS_IN_INT - 1) + i * BITS_IN_INT);
+    val->bits[i] = (val->bits[i] << 1) + overflow;
+    overflow = next_overflow;
+  }
+
+  return overflow;
+}
+
+int left_shift_4n(s21_2n_decimal* dh, s21_2n_decimal* dl) {
+  int ret = left_shift_2n_dec(dl);
+  int res = left_shift_2n_dec(dh);
+  set_bit(&dh->bits[0], 0, ret);
+  return res;
 }
 
 int right_shift(s21_decimal* val) {
