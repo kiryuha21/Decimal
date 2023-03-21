@@ -435,7 +435,7 @@ int right_shift(s21_decimal* val) {
   return overflow;
 }
 
-int right_shift_2n(s21_decimal* dh, s21_decimal* dl) {
+void right_shift_2n(s21_decimal* dh, s21_decimal* dl) {
   int ret = right_shift(dh);
   right_shift(dl);
   set_bit(&dl->bits[2], (BITS_IN_INT - 1), ret);

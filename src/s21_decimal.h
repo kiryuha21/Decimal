@@ -104,7 +104,7 @@ int left_shift(s21_decimal *val);
 int left_shift_2n(s21_decimal *dh, s21_decimal *dl);
 int left_shift_4n(s21_2n_decimal *dh, s21_2n_decimal *dl);
 int right_shift(s21_decimal *val);
-int right_shift_2n(s21_decimal *dh, s21_decimal *dl);
+void right_shift_2n(s21_decimal *dh, s21_decimal *dl);
 void handle_decimal_inc(s21_decimal *val);
 int make_first_bigger_no_signs(s21_decimal *first, s21_decimal *second);
 int is_bigger(s21_decimal first, s21_decimal second);
