@@ -71,6 +71,9 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   }
 
   null_decimal(result);
+  if (is_zero(&value_2) == TRUE) {
+    return ZERO_DIVISION;
+  }
 
   s21_decimal rh, rl;
 
@@ -88,6 +91,9 @@ int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   }
 
   null_decimal(result);
+  if (is_zero(&value_2) == TRUE) {
+    return ZERO_DIVISION;
+  }
 
   s21_decimal rh, rl;
 
