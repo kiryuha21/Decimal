@@ -19,10 +19,6 @@ void set_bit(unsigned int* val, int index, int bit) {
   }
 }
 
-void set_decimal_bit(s21_decimal* val, int index, int bit) {
-  set_bit(&val->bits[index / BITS_IN_INT], index % BITS_IN_INT, bit);
-}
-
 int get_sign(const s21_decimal* val) {
   return get_bit(val->bits[3], SIGN_BIT) ? NEGATIVE : POSITIVE;
 }
