@@ -103,6 +103,9 @@ int is_bigger(s21_decimal first, s21_decimal second);
 int is_equal(s21_decimal first, s21_decimal second);
 int decimal_size_10(s21_decimal val);
 int try_add_overflow(s21_decimal *val, s21_decimal overflow);
+int should_round_up(unsigned long long extended_bit, int thrown_digits);
+int should_bround_up(unsigned long long extended_bit, int thrown_digits,
+                     unsigned int low_integer);
 int bank_round(s21_decimal *val, s21_decimal overflow);
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_H

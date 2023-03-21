@@ -450,8 +450,19 @@ int try_add_overflow(s21_decimal* val, s21_decimal overflow) {
   return bank_round(val, overflow);
 }
 
+int should_bround_up(unsigned long long extended_bit, int thrown_digits,
+                     unsigned int low_integer) {
+  return extended_bit == 5 && thrown_digits == 0 && low_integer % 2 == 1;
+}
+
+int should_round_up(unsigned long long extended_bit, int thrown_digits) {
+  return extended_bit % 10 >= 6 ||
+         (extended_bit % 10 == 5 && thrown_digits == 1);
+}
+
 int bank_round(s21_decimal* val, s21_decimal overflow) {
   int exp_change = 0;
+  int thrown_digits = 0;
   unsigned long long bit_val = 0;
   while (is_zero(&overflow) == FALSE) {
     ++exp_change;
@@ -462,15 +473,15 @@ int bank_round(s21_decimal* val, s21_decimal overflow) {
       bit_val = (unsigned long long)(val->bits[i] + mod * OVERFLOW_BIT);
       val->bits[i] = bit_val / 10;
       mod = bit_val % 10;
+      if (mod != 0) {
+        thrown_digits = 1;
+      }
     }
   }
 
-  if (get_exponent(val) < exp_change) {
-    return ERROR;
-  }
-
-  // TODO: Make real bank round for last sym
-  if (bit_val % 10 >= 5 && exp_change != 0) {
+  if ((should_round_up(bit_val, thrown_digits) ||
+       should_bround_up(bit_val, thrown_digits, val->bits[0] % 10)) &&
+      exp_change != 0) {
     int ret = add_int_to_dec(*val, 1, val);
     if (ret != OK) {
       return get_sign(val) == POSITIVE ? TOO_LARGE : TOO_SMALL;

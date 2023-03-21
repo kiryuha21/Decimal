@@ -27,16 +27,14 @@ int s21_round(s21_decimal value, s21_decimal *result) {
   }
   reduce_exponent(&value);
 
-  int overflow = 0;
   s21_decimal temp = value;
   int exp = (int)get_exponent(&value);
   for (int i = 0; i < exp - 1; ++i) {
-    int ret = div_dec_on_int(temp, 10, &temp);
-    overflow = ret + overflow > 5;
+    div_dec_on_int(temp, 10, &temp);
   }
 
   s21_truncate(value, result);
-  if (temp.bits[0] % 10 + overflow > 5 || temp.bits[0] % 10 == 5) {
+  if (temp.bits[0] % 10 >= 5) {
     handle_decimal_inc(result);
   }
 
