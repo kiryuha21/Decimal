@@ -8,6 +8,7 @@
 #define NEGATIVE_DECIMAL 0x80000000
 #define POSITIVE 0
 #define EXPONENT_MASK 0x00FF0000
+#define NULL_BITS_MASK 0x80FF0000
 #define DEFAULT_DECIMAL \
   {                     \
     { 0, 0, 0, 0 }      \

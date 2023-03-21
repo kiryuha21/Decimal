@@ -75,7 +75,7 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     return ZERO_DIVISION;
   }
 
-  s21_decimal rh, rl;
+  s21_decimal rh = DEFAULT_DECIMAL, rl = DEFAULT_DECIMAL;
 
   unsigned int scale;
   s21_decimal overflow;
@@ -106,7 +106,7 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 
 int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   if (!result) {
-    return ERROR;
+    return OK;
   }
 
   null_decimal(result);
@@ -114,7 +114,7 @@ int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     return ZERO_DIVISION;
   }
 
-  s21_decimal rh, rl;
+  s21_decimal rh = DEFAULT_DECIMAL, rl = DEFAULT_DECIMAL;
 
   unsigned int scale;
   s21_decimal overflow;
@@ -123,6 +123,7 @@ int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   int ret = div_without_signs(value_1, value_2, &rh, &rl);
 
   set_exponent(&rl, scale);
+  set_sign(&rl, get_sign(&value_1));
   reduce_exponent(&rl);
 
   *result = rl;

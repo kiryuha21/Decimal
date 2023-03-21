@@ -63,6 +63,14 @@ unsigned int get_exponent(const s21_decimal* val) {
   return (val->bits[3] & EXPONENT_MASK) >> 16;
 }
 
+void zero_bits(s21_decimal* val) {
+  for (int i = 0; i < 32; ++i) {
+    if (get_bit(NULL_BITS_MASK, i) == 0) {
+      set_bit(&val->bits[3], i, 0);
+    }
+  }
+}
+
 void set_exponent(s21_decimal* val, unsigned int exp) {
   for (int i = 0; i < 8; ++i) {
     set_bit(&val->bits[3], 16 + i, (int)(exp % 2));
@@ -280,6 +288,7 @@ void swap_decimals(s21_decimal* val1, s21_decimal* val2) {
 }
 
 void reduce_exponent(s21_decimal* val) {
+  zero_bits(val);
   if (is_zero(val) == TRUE) {
     set_sign(val, POSITIVE);
     set_exponent(val, 0);

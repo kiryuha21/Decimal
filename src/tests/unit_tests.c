@@ -11,7 +11,7 @@ int main() {
       suite_s21_is_not_equal(), suite_s21_mul(), suite_s21_floor(),
       suite_s21_from_decimal_to_float(), suite_s21_from_decimal_to_int(),
       suite_s21_from_float_to_decimal(), suite_s21_from_int_to_decimal(),
-      suite_s21_round(), suite_s21_truncate(), suite_s21_mod(),
+      suite_s21_round(), suite_s21_mod(), suite_s21_truncate(),
       suite_s21_div()};
 
   // TODO: remove + x
