@@ -21,9 +21,9 @@ int main() {
              test.bits[1], test.bits[2], test.bits[3]);
     printf("%s\n", ourRes);
   }*/
-  s21_decimal x = {{0xffffffff, 0xffffffff, 0xffffffff, NEGATIVE_DECIMAL}};
-  s21_decimal y = {{2, 0, 0, 28 << 16}};
-  s21_decimal z = {{0, 0, 0, 0}};
+  s21_decimal x = {{1, 0, 0, 0x00030000}};
+  s21_decimal y = {{1, 0, 0, 0}};
+  s21_decimal z = DEFAULT_DECIMAL;
   int err = 0;
   err = s21_div(x, y, &z);
 }

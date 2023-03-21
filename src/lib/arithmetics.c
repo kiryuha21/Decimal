@@ -96,7 +96,7 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   set_sign(result,
            get_sign(&value_1) == get_sign(&value_2) ? POSITIVE : NEGATIVE);
   if (get_exponent(&value_1) >= get_exponent(&value_2)) {
-    set_exponent(&rh_1n1, get_exponent(&value_1) - get_exponent(&value_2));
+    set_exponent(result, get_exponent(&value_1) - get_exponent(&value_2));
   } else {
     for (unsigned int i = get_exponent(&value_2); i < get_exponent(&value_1);
          ++i) {
