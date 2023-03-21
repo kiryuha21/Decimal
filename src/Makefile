@@ -1,6 +1,6 @@
 CC = gcc
 
-#FLAGS = -Wall -Wextra -Werror -std=c11 -fanalyzer -pedantic
+FLAGS = -Wall -Wextra -Werror -std=c11 -fanalyzer -pedantic
 
 ADDITIONAL_FLAGS = -lcheck
 UNAME_S := $(shell uname -s)
@@ -48,6 +48,7 @@ gcov_report: apply_clang
 	lcov -t "$(TEST_TARGET)" -o $(TEST_TARGET).info -c -d .
 	genhtml -o report $(TEST_TARGET).info
 	rm *.gcda *.gcno *.info
+	open report/index.html
 
 $(LIB): apply_clang
 	$(CC) -c $(SRC_C_FILES) $(ADDITIONAL_FLAGS)

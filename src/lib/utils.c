@@ -23,26 +23,6 @@ void set_decimal_bit(s21_decimal* val, int index, int bit) {
   set_bit(&val->bits[index / BITS_IN_INT], index % BITS_IN_INT, bit);
 }
 
-int get_higher_bit(unsigned int val) {
-  int res = -1;
-  for (int i = 0; val != 0; ++i) {
-    if ((val & 1) == 1) {
-      res = i;
-    }
-    val = val >> 1;
-  }
-  return res;
-}
-
-int decimal_size(s21_decimal val) {
-  for (int i = 2; i >= 0; --i) {
-    if (val.bits[i] != 0) {
-      return get_higher_bit(val.bits[i]) + BITS_IN_INT * i;
-    }
-  }
-  return 0;
-}
-
 int get_sign(const s21_decimal* val) {
   return get_bit(val->bits[3], SIGN_BIT) ? NEGATIVE : POSITIVE;
 }
@@ -103,7 +83,7 @@ int add_int_to_dec(s21_decimal val, int num, s21_decimal* res) {
 int sub_int_fr_dec(s21_decimal val, int num, s21_decimal* res) {
   null_decimal_val(res);
 
-  int overflow = num;
+  unsigned int overflow = num;
 
   for (int i = 0; i <= 2; ++i) {
     unsigned long long bit_val;
@@ -312,31 +292,12 @@ void reduce_exponent(s21_decimal* val) {
   set_exponent(val, exp);
 }
 
-s21_decimal create_decimal(unsigned int bit0, unsigned int bit1,
-                           unsigned int bit2, unsigned int bit3) {
-  s21_decimal res = {{bit0, bit1, bit2, bit3}};
-  return res;
-}
-
 int get_elder_bit_index(const s21_decimal* val) {
   if (val->bits[1] == 0) {
     return 0;
   }
 
   if (val->bits[2] == 0) {
-    return 1;
-  }
-
-  return 2;
-}
-
-int get_first_integer_bit_index(const s21_decimal* val) {
-  int exp = (int)get_exponent(val);
-  if (exp < 10) {
-    return 0;
-  }
-
-  if (exp < 20) {
     return 1;
   }
 
@@ -394,12 +355,6 @@ void handle_decimal_inc(s21_decimal* val) {
   val->bits[2] += 1;
 }
 
-void print_decimal(const s21_decimal* val) {
-  printf("\nsign = %s\nexp = %u\nbit[2] - %.8X\nbit[1] - %.8X\nbit[0] - %.8X\n",
-         get_sign(val) == POSITIVE ? "POSITIVE" : "NEGATIVE", get_exponent(val),
-         val->bits[2], val->bits[1], val->bits[0]);
-}
-
 // return TRUE if swapped
 int make_first_bigger_no_signs(s21_decimal* first, s21_decimal* second) {
   int ret = is_bigger(*second, *first);
@@ -428,7 +383,7 @@ int decimal_size_10(s21_decimal val) {
   if (is_zero(&val) == TRUE) {
     return 0;
   }
-  s21_decimal temp = {1, 0, 0, 0};
+  s21_decimal temp = {{1, 0, 0, 0}};
 
   int ret = OK;
   int exp = 0;
@@ -450,7 +405,7 @@ int try_add_overflow(s21_decimal* val, s21_decimal overflow) {
     return OK;
   }
 
-  int size = decimal_size_10(overflow);
+  unsigned int size = decimal_size_10(overflow);
 
   if (get_exponent(val) < size) {
     return get_sign(val) == POSITIVE ? TOO_LARGE : TOO_SMALL;
