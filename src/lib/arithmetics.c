@@ -77,10 +77,29 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 
   s21_decimal rh, rl;
 
-  int exp1 = (int)get_exponent(&value_1), exp2 = (int)get_exponent(&value_2);
-  int diff = exp1 - exp2;
+  unsigned int scale;
+  s21_decimal overflow;
+  int ret = scale_decimals(&value_1, &value_2, &scale, &overflow);
 
-  int ret = div_without_signs(value_1, value_2, &rh, &rl);
+  ret = div_without_signs(value_1, value_2, &rh, &rl);
+  if (ret != OK) {
+    return ret;
+  }
+  *result = rh;
+  reduce_exponent(result);
+
+  if (get_exponent(&value_1) >= get_exponent(&value_2)) {
+    set_exponent(&rh, get_exponent(&value_1) - get_exponent(&value_2));
+  } else {
+    for (unsigned int i = get_exponent(&value_2); i < get_exponent(&value_1);
+         ++i) {
+      ret = mul_dec_on_int(*result, 10, result);
+      if (ret != OK) {
+        return ret;
+      }
+    }
+    set_exponent(result, 0);
+  }
 
   return ret;
 }
