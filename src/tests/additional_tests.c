@@ -2448,8 +2448,7 @@ START_TEST(decimal_mod_1) {
   int err = 0;
   err = s21_mod(x, y, &z);
   char ourRes[1000], expect[1000] = "8 0 0 196608";
-  snprintf(ourRes, sizeof(char) * 1000, "%u %u %u %u", z.bits[0], z.bits[1],
-           z.bits[2], z.bits[3]);
+  sprintf(ourRes, "%u %u %u %u", z.bits[0], z.bits[1], z.bits[2], z.bits[3]);
   ck_assert_str_eq(ourRes, expect);
   ck_assert_int_eq(err, 0);
 }

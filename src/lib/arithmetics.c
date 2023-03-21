@@ -9,7 +9,7 @@ int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 
   unsigned int scale;
   s21_decimal overflow = {0};
-  int ret = scale_decimals(&value_1, &value_2, &scale, &overflow);
+  scale_decimals(&value_1, &value_2, &scale, &overflow);
 
   set_exponent(result, scale);
   set_sign(result, get_sign(&value_1));
@@ -74,10 +74,8 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 
   s21_decimal rh, rl;
 
-  unsigned int exp1 = get_exponent(&value_1), exp2 = get_exponent(&value_2);
-
-  if (exp1 > exp2) {
-  }
+  int exp1 = (int)get_exponent(&value_1), exp2 = (int)get_exponent(&value_2);
+  int diff = exp1 - exp2;
 
   int ret = div_without_signs(value_1, value_2, &rh, &rl);
 
@@ -85,5 +83,24 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 }
 
 int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-  return OK;
+  if (!result) {
+    return ERROR;
+  }
+
+  null_decimal(result);
+
+  s21_decimal rh, rl;
+
+  unsigned int scale;
+  s21_decimal overflow;
+  scale_decimals(&value_1, &value_2, &scale, &overflow);
+
+  int ret = div_without_signs(value_1, value_2, &rh, &rl);
+
+  set_exponent(&rl, scale);
+  reduce_exponent(&rl);
+
+  *result = rl;
+
+  return ret;
 }

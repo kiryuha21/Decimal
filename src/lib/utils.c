@@ -179,7 +179,7 @@ int div_without_signs(s21_decimal a, s21_decimal b, s21_decimal* rh,
       set_decimal_bit(&c, i, 0);
     } else {
       set_decimal_bit(&c, i, 1);
-      s21_sub(*rh, b, rh);
+      sub_diff_signs(*rh, b, rh);
     }
   }
 
