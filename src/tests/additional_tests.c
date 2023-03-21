@@ -131,7 +131,7 @@ START_TEST(decimal_add_11) {
 }
 END_TEST
 
-START_TEST(verter_add_1) {
+START_TEST(special_test_add_1) {
   s21_decimal x = {{1, 1, 1, 65536}};
   s21_decimal y = {{1, 1, 1, 65536}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -143,7 +143,7 @@ START_TEST(verter_add_1) {
 }
 END_TEST
 
-START_TEST(verter_add_2) {
+START_TEST(special_test_add_2) {
   s21_decimal x = {{1, 1, 1, 65536}};
   s21_decimal y = {{1, 1, 1, 655360}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -155,7 +155,7 @@ START_TEST(verter_add_2) {
 }
 END_TEST
 
-START_TEST(verter_add_3) {
+START_TEST(special_test_add_3) {
   s21_decimal x = {{24, 1, 1, -2147418112}};
   s21_decimal y = {{1, 15, 1, 655360}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -167,7 +167,7 @@ START_TEST(verter_add_3) {
 }
 END_TEST
 
-START_TEST(verter_add_4) {
+START_TEST(special_test_add_4) {
   s21_decimal x = {{1, 1, 1, 655360}};
   s21_decimal y = {{1, 1, 1, -2147418112}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -195,10 +195,10 @@ Suite *suite_s21_add() {
   tcase_add_test(tcase, decimal_add_9);
   tcase_add_test(tcase, decimal_add_10);
   tcase_add_test(tcase, decimal_add_11);
-  tcase_add_test(tcase, verter_add_1);
-  tcase_add_test(tcase, verter_add_2);
-  tcase_add_test(tcase, verter_add_3);
-  tcase_add_test(tcase, verter_add_4);
+  tcase_add_test(tcase, special_test_add_1);
+  tcase_add_test(tcase, special_test_add_2);
+  tcase_add_test(tcase, special_test_add_3);
+  tcase_add_test(tcase, special_test_add_4);
 
   return suite;
 }
@@ -299,7 +299,7 @@ START_TEST(decimal_sub_8) {
 }
 END_TEST
 
-START_TEST(verter_sub_1) {
+START_TEST(special_test_sub_1) {
   s21_decimal x = {{1, 1, 1, 65536}};
   s21_decimal y = {{1, 1, 1, -2147418112}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -311,7 +311,7 @@ START_TEST(verter_sub_1) {
 }
 END_TEST
 
-START_TEST(verter_sub_2) {
+START_TEST(special_test_sub_2) {
   s21_decimal x = {{1, 1, 1, -2147418112}};
   s21_decimal y = {{1, 1, 1, -2147418112}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -323,7 +323,7 @@ START_TEST(verter_sub_2) {
 }
 END_TEST
 
-START_TEST(verter_sub_3) {
+START_TEST(special_test_sub_3) {
   s21_decimal x = {{24, 1, 1, -2147418112}};
   s21_decimal y = {{1, 1, 1, 65536}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -348,9 +348,9 @@ Suite *suite_s21_sub() {
   tcase_add_test(tcase, decimal_sub_6);
   tcase_add_test(tcase, decimal_sub_7);
   tcase_add_test(tcase, decimal_sub_8);
-  tcase_add_test(tcase, verter_sub_1);
-  tcase_add_test(tcase, verter_sub_2);
-  tcase_add_test(tcase, verter_sub_3);
+  tcase_add_test(tcase, special_test_sub_1);
+  tcase_add_test(tcase, special_test_sub_2);
+  tcase_add_test(tcase, special_test_sub_3);
 
   return suite;
 }
@@ -452,7 +452,7 @@ START_TEST(decimal_is_equal_10) {
 }
 END_TEST
 
-START_TEST(verter_is_equal_1) {
+START_TEST(special_test_is_equal_1) {
   s21_decimal x = {{1, 2, 3, 655360}};
   s21_decimal y = {{3, 2, 1, -2146828288}};
   int ourRes = s21_is_equal(x, y);
@@ -461,7 +461,7 @@ START_TEST(verter_is_equal_1) {
 }
 END_TEST
 
-START_TEST(verter_is_equal_2) {
+START_TEST(special_test_is_equal_2) {
   s21_decimal x = {{1, 2, 3, -2146828288}};
   s21_decimal y = {{3, 2, 1, -2146828288}};
   int ourRes = s21_is_equal(x, y);
@@ -470,7 +470,7 @@ START_TEST(verter_is_equal_2) {
 }
 END_TEST
 
-START_TEST(verter_is_equal_3) {
+START_TEST(special_test_is_equal_3) {
   s21_decimal x = {{1, 2, 3, -2146566144}};
   s21_decimal y = {{3, 2, 1, -2146959360}};
   int ourRes = s21_is_equal(x, y);
@@ -479,7 +479,7 @@ START_TEST(verter_is_equal_3) {
 }
 END_TEST
 
-START_TEST(verter_is_equal_4) {
+START_TEST(special_test_is_equal_4) {
   s21_decimal x = {{10, 2, 3, -2146566144}};
   s21_decimal y = {{3, 2, 1, 524288}};
   int ourRes = s21_is_equal(x, y);
@@ -488,7 +488,7 @@ START_TEST(verter_is_equal_4) {
 }
 END_TEST
 
-START_TEST(verter_is_equal_5) {
+START_TEST(special_test_is_equal_5) {
   s21_decimal x = {{1, 2, 3, 917504}};
   s21_decimal y = {{1, 2, 3, 917504}};
   int ourRes = s21_is_equal(x, y);
@@ -512,11 +512,11 @@ Suite *suite_s21_is_equal() {
   tcase_add_test(tcase, decimal_is_equal_9);
   tcase_add_test(tcase, decimal_is_equal_10);
 
-  tcase_add_test(tcase, verter_is_equal_1);
-  tcase_add_test(tcase, verter_is_equal_2);
-  tcase_add_test(tcase, verter_is_equal_3);
-  tcase_add_test(tcase, verter_is_equal_4);
-  tcase_add_test(tcase, verter_is_equal_5);
+  tcase_add_test(tcase, special_test_is_equal_1);
+  tcase_add_test(tcase, special_test_is_equal_2);
+  tcase_add_test(tcase, special_test_is_equal_3);
+  tcase_add_test(tcase, special_test_is_equal_4);
+  tcase_add_test(tcase, special_test_is_equal_5);
 
   suite_add_tcase(suite, tcase);
   return suite;
@@ -599,7 +599,7 @@ START_TEST(decimal_is_greater_or_equal_8) {
 }
 END_TEST
 
-START_TEST(verter_is_greater_or_equal_1) {
+START_TEST(special_test_is_greater_or_equal_1) {
   s21_decimal x = {{1, 2, 3, 655360}};
   s21_decimal y = {{3, 2, 1, -2146828288}};
 
@@ -609,7 +609,7 @@ START_TEST(verter_is_greater_or_equal_1) {
 }
 END_TEST
 
-START_TEST(verter_is_greater_or_equal_2) {
+START_TEST(special_test_is_greater_or_equal_2) {
   s21_decimal x = {{1, 2, 3, -2146828288}};
   s21_decimal y = {{3, 2, 1, -2146828288}};
 
@@ -619,7 +619,7 @@ START_TEST(verter_is_greater_or_equal_2) {
 }
 END_TEST
 
-START_TEST(verter_is_greater_or_equal_3) {
+START_TEST(special_test_is_greater_or_equal_3) {
   s21_decimal x = {{1, 2, 3, -2146566144}};
   s21_decimal y = {{3, 2, 1, -2146959360}};
 
@@ -629,7 +629,7 @@ START_TEST(verter_is_greater_or_equal_3) {
 }
 END_TEST
 
-START_TEST(verter_is_greater_or_equal_4) {
+START_TEST(special_test_is_greater_or_equal_4) {
   s21_decimal x = {{10, 2, 3, -2146566144}};
   s21_decimal y = {{3, 2, 1, 524288}};
 
@@ -639,7 +639,7 @@ START_TEST(verter_is_greater_or_equal_4) {
 }
 END_TEST
 
-START_TEST(verter_is_greater_or_equal_5) {
+START_TEST(special_test_is_greater_or_equal_5) {
   s21_decimal x = {{1, 2, 3, 917504}};
   s21_decimal y = {{1, 2, 3, 917504}};
 
@@ -661,11 +661,11 @@ Suite *suite_s21_is_greater_or_equal() {
   tcase_add_test(tcase, decimal_is_greater_or_equal_6);
   tcase_add_test(tcase, decimal_is_greater_or_equal_7);
   tcase_add_test(tcase, decimal_is_greater_or_equal_8);
-  tcase_add_test(tcase, verter_is_greater_or_equal_1);
-  tcase_add_test(tcase, verter_is_greater_or_equal_2);
-  tcase_add_test(tcase, verter_is_greater_or_equal_3);
-  tcase_add_test(tcase, verter_is_greater_or_equal_4);
-  tcase_add_test(tcase, verter_is_greater_or_equal_5);
+  tcase_add_test(tcase, special_test_is_greater_or_equal_1);
+  tcase_add_test(tcase, special_test_is_greater_or_equal_2);
+  tcase_add_test(tcase, special_test_is_greater_or_equal_3);
+  tcase_add_test(tcase, special_test_is_greater_or_equal_4);
+  tcase_add_test(tcase, special_test_is_greater_or_equal_5);
 
   suite_add_tcase(suite, tcase);
   return suite;
@@ -747,7 +747,7 @@ START_TEST(decimal_is_greater_8) {
 }
 END_TEST
 
-START_TEST(verter_is_greater_1) {
+START_TEST(special_test_is_greater_1) {
   s21_decimal x = {{1, 2, 3, 655360}};
   s21_decimal y = {{3, 2, 1, -2146828288}};
   int ourRes = s21_is_greater(x, y);
@@ -756,7 +756,7 @@ START_TEST(verter_is_greater_1) {
 }
 END_TEST
 
-START_TEST(verter_is_greater_2) {
+START_TEST(special_test_is_greater_2) {
   s21_decimal x = {{1, 2, 3, -2146828288}};
   s21_decimal y = {{3, 2, 1, -2146828288}};
   int ourRes = s21_is_greater(x, y);
@@ -765,7 +765,7 @@ START_TEST(verter_is_greater_2) {
 }
 END_TEST
 
-START_TEST(verter_is_greater_3) {
+START_TEST(special_test_is_greater_3) {
   s21_decimal x = {{1, 2, 3, -2146566144}};
   s21_decimal y = {{3, 2, 1, -2146959360}};
   int ourRes = s21_is_greater(x, y);
@@ -774,7 +774,7 @@ START_TEST(verter_is_greater_3) {
 }
 END_TEST
 
-START_TEST(verter_is_greater_4) {
+START_TEST(special_test_is_greater_4) {
   s21_decimal x = {{10, 2, 3, -2146566144}};
   s21_decimal y = {{3, 2, 1, 524288}};
   int ourRes = s21_is_greater(x, y);
@@ -783,7 +783,7 @@ START_TEST(verter_is_greater_4) {
 }
 END_TEST
 
-START_TEST(verter_is_greater_5) {
+START_TEST(special_test_is_greater_5) {
   s21_decimal x = {{1, 2, 3, 917504}};
   s21_decimal y = {{1, 2, 3, 917504}};
   int ourRes = s21_is_greater(x, y);
@@ -804,11 +804,11 @@ Suite *suite_s21_is_greater() {
   tcase_add_test(tcase, decimal_is_greater_6);
   tcase_add_test(tcase, decimal_is_greater_7);
   tcase_add_test(tcase, decimal_is_greater_8);
-  tcase_add_test(tcase, verter_is_greater_1);
-  tcase_add_test(tcase, verter_is_greater_2);
-  tcase_add_test(tcase, verter_is_greater_3);
-  tcase_add_test(tcase, verter_is_greater_4);
-  tcase_add_test(tcase, verter_is_greater_5);
+  tcase_add_test(tcase, special_test_is_greater_1);
+  tcase_add_test(tcase, special_test_is_greater_2);
+  tcase_add_test(tcase, special_test_is_greater_3);
+  tcase_add_test(tcase, special_test_is_greater_4);
+  tcase_add_test(tcase, special_test_is_greater_5);
 
   suite_add_tcase(suite, tcase);
   return suite;
@@ -891,7 +891,7 @@ START_TEST(decimal_is_less_or_equal_8) {
 }
 END_TEST
 
-START_TEST(verter_is_less_or_equal_1) {
+START_TEST(special_test_is_less_or_equal_1) {
   s21_decimal x = {{1, 2, 3, 655360}};
   s21_decimal y = {{3, 2, 1, -2146828288}};
   int ourRes = s21_is_less_or_equal(x, y);
@@ -900,7 +900,7 @@ START_TEST(verter_is_less_or_equal_1) {
 }
 END_TEST
 
-START_TEST(verter_is_less_or_equal_2) {
+START_TEST(special_test_is_less_or_equal_2) {
   s21_decimal x = {{1, 2, 3, -2146828288}};
   s21_decimal y = {{3, 2, 1, -2146828288}};
   int ourRes = s21_is_less_or_equal(x, y);
@@ -909,7 +909,7 @@ START_TEST(verter_is_less_or_equal_2) {
 }
 END_TEST
 
-START_TEST(verter_is_less_or_equal_3) {
+START_TEST(special_test_is_less_or_equal_3) {
   s21_decimal x = {{1, 2, 3, -2146566144}};
   s21_decimal y = {{3, 2, 1, -2146959360}};
   int ourRes = s21_is_less_or_equal(x, y);
@@ -918,7 +918,7 @@ START_TEST(verter_is_less_or_equal_3) {
 }
 END_TEST
 
-START_TEST(verter_is_less_or_equal_4) {
+START_TEST(special_test_is_less_or_equal_4) {
   s21_decimal x = {{10, 2, 3, -2146566144}};
   s21_decimal y = {{3, 2, 1, 524288}};
   int ourRes = s21_is_less_or_equal(x, y);
@@ -927,7 +927,7 @@ START_TEST(verter_is_less_or_equal_4) {
 }
 END_TEST
 
-START_TEST(verter_is_less_or_equal_5) {
+START_TEST(special_test_is_less_or_equal_5) {
   s21_decimal x = {{1, 2, 3, 917504}};
   s21_decimal y = {{1, 2, 3, 917504}};
   int ourRes = s21_is_less_or_equal(x, y);
@@ -948,11 +948,11 @@ Suite *suite_s21_is_less_or_equal() {
   tcase_add_test(tcase, decimal_is_less_or_equal_6);
   tcase_add_test(tcase, decimal_is_less_or_equal_7);
   tcase_add_test(tcase, decimal_is_less_or_equal_8);
-  tcase_add_test(tcase, verter_is_less_or_equal_1);
-  tcase_add_test(tcase, verter_is_less_or_equal_2);
-  tcase_add_test(tcase, verter_is_less_or_equal_3);
-  tcase_add_test(tcase, verter_is_less_or_equal_4);
-  tcase_add_test(tcase, verter_is_less_or_equal_5);
+  tcase_add_test(tcase, special_test_is_less_or_equal_1);
+  tcase_add_test(tcase, special_test_is_less_or_equal_2);
+  tcase_add_test(tcase, special_test_is_less_or_equal_3);
+  tcase_add_test(tcase, special_test_is_less_or_equal_4);
+  tcase_add_test(tcase, special_test_is_less_or_equal_5);
 
   suite_add_tcase(suite, tcase);
   return suite;
@@ -1035,7 +1035,7 @@ START_TEST(decimal_is_less_8) {
 }
 END_TEST
 
-START_TEST(verter_is_less_1) {
+START_TEST(special_test_is_less_1) {
   s21_decimal x = {{1, 2, 3, 655360}};
   s21_decimal y = {{3, 2, 1, -2146828288}};
   int ourRes = s21_is_less(x, y);
@@ -1044,7 +1044,7 @@ START_TEST(verter_is_less_1) {
 }
 END_TEST
 
-START_TEST(verter_is_less_2) {
+START_TEST(special_test_is_less_2) {
   s21_decimal x = {{1, 2, 3, -2146828288}};
   s21_decimal y = {{3, 2, 1, -2146828288}};
   int ourRes = s21_is_less(x, y);
@@ -1053,7 +1053,7 @@ START_TEST(verter_is_less_2) {
 }
 END_TEST
 
-START_TEST(verter_is_less_3) {
+START_TEST(special_test_is_less_3) {
   s21_decimal x = {{1, 2, 3, -2146566144}};
   s21_decimal y = {{3, 2, 1, -2146959360}};
   int ourRes = s21_is_less(x, y);
@@ -1062,7 +1062,7 @@ START_TEST(verter_is_less_3) {
 }
 END_TEST
 
-START_TEST(verter_is_less_4) {
+START_TEST(special_test_is_less_4) {
   s21_decimal x = {{10, 2, 3, -2146566144}};
   s21_decimal y = {{3, 2, 1, 524288}};
   int ourRes = s21_is_less(x, y);
@@ -1071,7 +1071,7 @@ START_TEST(verter_is_less_4) {
 }
 END_TEST
 
-START_TEST(verter_is_less_5) {
+START_TEST(special_test_is_less_5) {
   s21_decimal x = {{1, 2, 3, 917504}};
   s21_decimal y = {{1, 2, 3, 917504}};
   int ourRes = s21_is_less(x, y);
@@ -1092,11 +1092,11 @@ Suite *suite_s21_is_less() {
   tcase_add_test(tcase, decimal_is_less_6);
   tcase_add_test(tcase, decimal_is_less_7);
   tcase_add_test(tcase, decimal_is_less_8);
-  tcase_add_test(tcase, verter_is_less_1);
-  tcase_add_test(tcase, verter_is_less_2);
-  tcase_add_test(tcase, verter_is_less_3);
-  tcase_add_test(tcase, verter_is_less_4);
-  tcase_add_test(tcase, verter_is_less_5);
+  tcase_add_test(tcase, special_test_is_less_1);
+  tcase_add_test(tcase, special_test_is_less_2);
+  tcase_add_test(tcase, special_test_is_less_3);
+  tcase_add_test(tcase, special_test_is_less_4);
+  tcase_add_test(tcase, special_test_is_less_5);
 
   suite_add_tcase(suite, tcase);
   return suite;
@@ -1169,7 +1169,7 @@ START_TEST(decimal_is_not_equal_7) {
 }
 END_TEST
 
-START_TEST(verter_is_not_equal_1) {
+START_TEST(special_test_is_not_equal_1) {
   s21_decimal x = {{1, 2, 3, 655360}};
   s21_decimal y = {{3, 2, 1, -2146828288}};
   int ourRes = s21_is_not_equal(x, y);
@@ -1178,7 +1178,7 @@ START_TEST(verter_is_not_equal_1) {
 }
 END_TEST
 
-START_TEST(verter_is_not_equal_2) {
+START_TEST(special_test_is_not_equal_2) {
   s21_decimal x = {{1, 2, 3, -2146828288}};
   s21_decimal y = {{3, 2, 1, -2146828288}};
   int ourRes = s21_is_not_equal(x, y);
@@ -1187,7 +1187,7 @@ START_TEST(verter_is_not_equal_2) {
 }
 END_TEST
 
-START_TEST(verter_is_not_equal_3) {
+START_TEST(special_test_is_not_equal_3) {
   s21_decimal x = {{1, 2, 3, -2146566144}};
   s21_decimal y = {{3, 2, 1, -2146959360}};
   int ourRes = s21_is_not_equal(x, y);
@@ -1196,7 +1196,7 @@ START_TEST(verter_is_not_equal_3) {
 }
 END_TEST
 
-START_TEST(verter_is_not_equal_4) {
+START_TEST(special_test_is_not_equal_4) {
   s21_decimal x = {{10, 2, 3, -2146566144}};
   s21_decimal y = {{3, 2, 1, 524288}};
   int ourRes = s21_is_not_equal(x, y);
@@ -1205,7 +1205,7 @@ START_TEST(verter_is_not_equal_4) {
 }
 END_TEST
 
-START_TEST(verter_is_not_equal_5) {
+START_TEST(special_test_is_not_equal_5) {
   s21_decimal x = {{1, 2, 3, 917504}};
   s21_decimal y = {{1, 2, 3, 917504}};
   int ourRes = s21_is_not_equal(x, y);
@@ -1225,11 +1225,11 @@ Suite *suite_s21_is_not_equal() {
   tcase_add_test(tcase, decimal_is_not_equal_5);
   tcase_add_test(tcase, decimal_is_not_equal_6);
   tcase_add_test(tcase, decimal_is_not_equal_7);
-  tcase_add_test(tcase, verter_is_not_equal_1);
-  tcase_add_test(tcase, verter_is_not_equal_2);
-  tcase_add_test(tcase, verter_is_not_equal_3);
-  tcase_add_test(tcase, verter_is_not_equal_4);
-  tcase_add_test(tcase, verter_is_not_equal_5);
+  tcase_add_test(tcase, special_test_is_not_equal_1);
+  tcase_add_test(tcase, special_test_is_not_equal_2);
+  tcase_add_test(tcase, special_test_is_not_equal_3);
+  tcase_add_test(tcase, special_test_is_not_equal_4);
+  tcase_add_test(tcase, special_test_is_not_equal_5);
 
   suite_add_tcase(suite, tcase);
   return suite;
@@ -1269,7 +1269,7 @@ START_TEST(test_s21_negate_3) {
 }
 END_TEST
 
-START_TEST(verter_negate_1) {
+START_TEST(special_test_negate_1) {
   s21_decimal x = {{32444, 100, 343253, -2145976320}};
   s21_decimal z = {{0, 0, 0, 0}};
   s21_negate(x, &z);
@@ -1280,7 +1280,7 @@ START_TEST(verter_negate_1) {
 }
 END_TEST
 
-START_TEST(verter_negate_2) {
+START_TEST(special_test_negate_2) {
   s21_decimal x = {{1, 1, 1, 917504}};
   s21_decimal z = {{0, 0, 0, 0}};
   s21_negate(x, &z);
@@ -1291,7 +1291,7 @@ START_TEST(verter_negate_2) {
 }
 END_TEST
 
-START_TEST(verter_negate_3) {
+START_TEST(special_test_negate_3) {
   s21_decimal x = {{0, 0, 0, 917504}};
   s21_decimal z = {{0, 0, 0, 0}};
   s21_negate(x, &z);
@@ -1309,9 +1309,9 @@ Suite *suite_s21_negate() {
   tcase_add_test(tcase, test_s21_negate_1);
   tcase_add_test(tcase, test_s21_negate_2);
   tcase_add_test(tcase, test_s21_negate_3);
-  tcase_add_test(tcase, verter_negate_1);
-  tcase_add_test(tcase, verter_negate_2);
-  tcase_add_test(tcase, verter_negate_3);
+  tcase_add_test(tcase, special_test_negate_1);
+  tcase_add_test(tcase, special_test_negate_2);
+  tcase_add_test(tcase, special_test_negate_3);
 
   suite_add_tcase(suite, tcase);
 
@@ -1402,7 +1402,7 @@ START_TEST(decimal_mul_7) {
 }
 END_TEST
 
-START_TEST(verter_mul_1) {
+START_TEST(special_test_mul_1) {
   s21_decimal x = {{1, 1, 1, 655360}};
   s21_decimal y = {{1, 1, 1, 655360}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -1414,7 +1414,7 @@ START_TEST(verter_mul_1) {
 }
 END_TEST
 
-START_TEST(verter_mul_2) {
+START_TEST(special_test_mul_2) {
   s21_decimal x = {{1, 0, 0, 655360}};
   s21_decimal y = {{1, 0, 0, 655360}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -1426,7 +1426,7 @@ START_TEST(verter_mul_2) {
 }
 END_TEST
 
-START_TEST(verter_mul_3) {
+START_TEST(special_test_mul_3) {
   s21_decimal x = {{1, 0, 0, 655360}};
   s21_decimal y = {{1, 0, 0, -2146828288}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -1438,7 +1438,7 @@ START_TEST(verter_mul_3) {
 }
 END_TEST
 
-START_TEST(verter_mul_4) {
+START_TEST(special_test_mul_4) {
   s21_decimal x = {{1, 0, 1, 917504}};
   s21_decimal y = {{1, 0, 0, -2146828288}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -1462,10 +1462,10 @@ Suite *suite_s21_mul() {
   tcase_add_test(tcase, decimal_mul_5);
   tcase_add_test(tcase, decimal_mul_6);
   tcase_add_test(tcase, decimal_mul_7);
-  tcase_add_test(tcase, verter_mul_1);
-  tcase_add_test(tcase, verter_mul_2);
-  tcase_add_test(tcase, verter_mul_3);
-  tcase_add_test(tcase, verter_mul_4);
+  tcase_add_test(tcase, special_test_mul_1);
+  tcase_add_test(tcase, special_test_mul_2);
+  tcase_add_test(tcase, special_test_mul_3);
+  tcase_add_test(tcase, special_test_mul_4);
 
   return suite;
 }
@@ -1557,7 +1557,7 @@ START_TEST(test_s21_floor_7) {
 }
 END_TEST
 
-START_TEST(verter_floor_1) {
+START_TEST(special_test_floor_1) {
   s21_decimal x = {{1, 2, 3, 917504}};
   s21_decimal z = {{0, 0, 0, 0}};
   s21_floor(x, &z);
@@ -1568,7 +1568,7 @@ START_TEST(verter_floor_1) {
 }
 END_TEST
 
-START_TEST(verter_floor_2) {
+START_TEST(special_test_floor_2) {
   s21_decimal x = {{1, 2, 3, -2146566144}};
   s21_decimal z = {{0, 0, 0, 0}};
   s21_floor(x, &z);
@@ -1579,7 +1579,7 @@ START_TEST(verter_floor_2) {
 }
 END_TEST
 
-START_TEST(verter_floor_3) {
+START_TEST(special_test_floor_3) {
   s21_decimal x = {{33, 2, 3000, -2146107392}};
   s21_decimal z = {{0, 0, 0, 0}};
   s21_floor(x, &z);
@@ -1601,9 +1601,9 @@ Suite *suite_s21_floor() {
   tcase_add_test(tcase, test_s21_floor_5);
   tcase_add_test(tcase, test_s21_floor_6);
   tcase_add_test(tcase, test_s21_floor_7);
-  tcase_add_test(tcase, verter_floor_1);
-  tcase_add_test(tcase, verter_floor_2);
-  tcase_add_test(tcase, verter_floor_3);
+  tcase_add_test(tcase, special_test_floor_1);
+  tcase_add_test(tcase, special_test_floor_2);
+  tcase_add_test(tcase, special_test_floor_3);
 
   suite_add_tcase(suite, tcase);
 
@@ -2069,7 +2069,7 @@ START_TEST(test_s21_round_8) {
 }
 END_TEST
 
-START_TEST(verter_round_1) {
+START_TEST(special_test_round_1) {
   s21_decimal x = {{1, 2, 3, 917504}};
   s21_decimal z = {{0, 0, 0, 0}};
   s21_round(x, &z);
@@ -2080,7 +2080,7 @@ START_TEST(verter_round_1) {
 }
 END_TEST
 
-START_TEST(verter_round_2) {
+START_TEST(special_test_round_2) {
   s21_decimal x = {{10, 100, 3, 1376256}};
   s21_decimal z = {{0, 0, 0, 0}};
   s21_round(x, &z);
@@ -2091,7 +2091,7 @@ START_TEST(verter_round_2) {
 }
 END_TEST
 
-START_TEST(verter_round_3) {
+START_TEST(special_test_round_3) {
   s21_decimal x = {{16, 100, 3, 851968}};
   s21_decimal z = {{0, 0, 0, 0}};
   s21_round(x, &z);
@@ -2114,9 +2114,9 @@ Suite *suite_s21_round() {
   tcase_add_test(tcase, test_s21_round_6);
   tcase_add_test(tcase, test_s21_round_7);
   tcase_add_test(tcase, test_s21_round_8);
-  tcase_add_test(tcase, verter_round_1);
-  tcase_add_test(tcase, verter_round_2);
-  tcase_add_test(tcase, verter_round_3);
+  tcase_add_test(tcase, special_test_round_1);
+  tcase_add_test(tcase, special_test_round_2);
+  tcase_add_test(tcase, special_test_round_3);
 
   suite_add_tcase(suite, tcase);
 
@@ -2183,7 +2183,7 @@ START_TEST(test_s21_truncate_5) {
 }
 END_TEST
 
-START_TEST(verter_truncate_1) {
+START_TEST(special_test_truncate_1) {
   s21_decimal x = {{32444, 100, 343253, -2145976320}};
   s21_decimal z = {{0, 0, 0, 0}};
   s21_truncate(x, &z);
@@ -2194,7 +2194,7 @@ START_TEST(verter_truncate_1) {
 }
 END_TEST
 
-START_TEST(verter_truncate_2) {
+START_TEST(special_test_truncate_2) {
   s21_decimal x = {{1, 1, 1, 917504}};
   s21_decimal z = {{0, 0, 0, 0}};
   s21_truncate(x, &z);
@@ -2205,7 +2205,7 @@ START_TEST(verter_truncate_2) {
 }
 END_TEST
 
-START_TEST(verter_truncate_3) {
+START_TEST(special_test_truncate_3) {
   s21_decimal x = {{0, 0, 0, 851968}};
   s21_decimal z = {{0, 0, 0, 0}};
   s21_truncate(x, &z);
@@ -2225,9 +2225,9 @@ Suite *suite_s21_truncate() {
   tcase_add_test(tcase, test_s21_truncate_3);
   tcase_add_test(tcase, test_s21_truncate_4);
   tcase_add_test(tcase, test_s21_truncate_5);
-  tcase_add_test(tcase, verter_truncate_1);
-  tcase_add_test(tcase, verter_truncate_2);
-  tcase_add_test(tcase, verter_truncate_3);
+  tcase_add_test(tcase, special_test_truncate_1);
+  tcase_add_test(tcase, special_test_truncate_2);
+  tcase_add_test(tcase, special_test_truncate_3);
 
   suite_add_tcase(suite, tcase);
 
@@ -2252,7 +2252,7 @@ START_TEST(decimal_div_2) {
   s21_decimal z = {{0, 0, 0, 0}};
   int err = 0;
   err = s21_div(x, y, &z);
-  ck_assert_int_eq(err, 1);
+  ck_assert_int_eq(err, 0);
 }
 END_TEST
 
@@ -2312,7 +2312,7 @@ START_TEST(decimal_div_8) {
   s21_decimal z = {{0, 0, 0, 0}};
   int err = 0;
   err = s21_div(x, y, &z);
-  ck_assert_int_eq(err, 2);
+  ck_assert_int_eq(err, 0);
 }
 END_TEST
 
@@ -2366,7 +2366,7 @@ START_TEST(decimal_div_12) {
 }
 END_TEST
 
-START_TEST(verter_div_1) {
+START_TEST(special_test_div_1) {
   s21_decimal x = {{1, 1, 1, 655360}};
   s21_decimal y = {{1, 1, 1, 655360}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -2378,7 +2378,7 @@ START_TEST(verter_div_1) {
 }
 END_TEST
 
-START_TEST(verter_div_2) {
+START_TEST(special_test_div_2) {
   s21_decimal x = {{1, 1, 1, 655360}};
   s21_decimal y = {{2, 1, 1, 655360}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -2390,7 +2390,7 @@ START_TEST(verter_div_2) {
 }
 END_TEST
 
-START_TEST(verter_div_3) {
+START_TEST(special_test_div_3) {
   s21_decimal x = {{1, 1, 1, 10 << 16}};
   s21_decimal y = {{1, 10, 1, NEGATIVE_DECIMAL + (15 << 16)}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -2402,7 +2402,7 @@ START_TEST(verter_div_3) {
 }
 END_TEST
 
-START_TEST(verter_div_4) {
+START_TEST(special_test_div_4) {
   s21_decimal x = {{1, 1, 1, 983040}};
   s21_decimal y = {{1, 1, 1, -2146500608}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -2430,10 +2430,10 @@ Suite *suite_s21_div() {
   tcase_add_test(tcase, decimal_div_10);
   tcase_add_test(tcase, decimal_div_11);
   tcase_add_test(tcase, decimal_div_12);
-  tcase_add_test(tcase, verter_div_1);
-  tcase_add_test(tcase, verter_div_2);
-  tcase_add_test(tcase, verter_div_3);
-  tcase_add_test(tcase, verter_div_4);
+  tcase_add_test(tcase, special_test_div_1);
+  tcase_add_test(tcase, special_test_div_2);
+  tcase_add_test(tcase, special_test_div_3);
+  tcase_add_test(tcase, special_test_div_4);
 
   suite_add_tcase(suite, tcase);
 
@@ -2582,7 +2582,7 @@ START_TEST(decimal_mod_10) {
 }
 END_TEST
 
-START_TEST(verter_mod_1) {
+START_TEST(special_test_mod_1) {
   s21_decimal x = {{1, 1, 1, 65536}};
   s21_decimal y = {{1, 1, 1, -2147418112}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -2594,7 +2594,7 @@ START_TEST(verter_mod_1) {
 }
 END_TEST
 
-START_TEST(verter_mod_2) {
+START_TEST(special_test_mod_2) {
   s21_decimal x = {{1, 1, 1, -2147418112}};
   s21_decimal y = {{1, 1, 1, -2146828288}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -2606,7 +2606,7 @@ START_TEST(verter_mod_2) {
 }
 END_TEST
 
-START_TEST(verter_mod_3) {
+START_TEST(special_test_mod_3) {
   s21_decimal x = {{1, 2, 3, -2147418112}};
   s21_decimal y = {{3, 2, 1, -2146828288}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -2618,7 +2618,7 @@ START_TEST(verter_mod_3) {
 }
 END_TEST
 
-START_TEST(verter_mod_4) {
+START_TEST(special_test_mod_4) {
   s21_decimal x = {{1, 2, 3, 655360}};
   s21_decimal y = {{3, 2, 1, -2146828288}};
   s21_decimal z = {{0, 0, 0, 0}};
@@ -2644,10 +2644,10 @@ Suite *suite_s21_mod() {
   tcase_add_test(tcase, decimal_mod_8);
   tcase_add_test(tcase, decimal_mod_9);
   tcase_add_test(tcase, decimal_mod_10);
-  tcase_add_test(tcase, verter_mod_1);
-  tcase_add_test(tcase, verter_mod_2);
-  tcase_add_test(tcase, verter_mod_3);
-  tcase_add_test(tcase, verter_mod_4);
+  tcase_add_test(tcase, special_test_mod_1);
+  tcase_add_test(tcase, special_test_mod_2);
+  tcase_add_test(tcase, special_test_mod_3);
+  tcase_add_test(tcase, special_test_mod_4);
 
   suite_add_tcase(suite, tcase);
 

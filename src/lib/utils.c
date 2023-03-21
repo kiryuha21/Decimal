@@ -161,6 +161,28 @@ int is_bigger_2n(s21_2n_decimal first, s21_2n_decimal second) {
   return FALSE;
 }
 
+int div_without_signs_1n(s21_decimal a, s21_decimal b, s21_decimal* rh,
+                         s21_decimal* rl) {
+  *rl = a;
+
+  s21_decimal c = DEFAULT_DECIMAL;
+
+  for (int i = 95; i >= 0; --i) {
+    left_shift_2n(rh, rl);
+    if (is_bigger(b, *rh) == TRUE) {
+      set_bit(&c.bits[i / 32], i % 32, 0);
+    } else {
+      set_bit(&c.bits[i / 32], i % 32, 1);
+      sub_diff_signs(*rh, b, rh);
+    }
+  }
+
+  *rl = c;
+  swap_decimals(rl, rh);
+
+  return OK;
+}
+
 int div_without_signs(s21_2n_decimal a, s21_2n_decimal b, s21_2n_decimal* rh,
                       s21_2n_decimal* rl) {
   *rl = a;
@@ -195,6 +217,32 @@ int add_same_signs(s21_decimal value_1, s21_decimal value_2,
   }
 
   return overflow;
+}
+
+int handle_enough(s21_decimal* result, s21_decimal* v1, s21_decimal v2) {
+  s21_decimal mh = DEFAULT_DECIMAL, ml = DEFAULT_DECIMAL;
+  div_without_signs_1n(*v1, v2, &mh, &ml);
+  if (is_zero(&mh) == FALSE) {
+    *v1 = ml;
+  }
+  mul_dec_on_int(*v1, 10, v1);
+  s21_decimal temp = *result;
+  int ret = add_same_signs(temp, mh, &temp);
+  if (ret == OK) {
+    *result = temp;
+  }
+  return ret;
+}
+
+int check_bank(s21_decimal* result, s21_decimal v1, s21_decimal v2) {
+  s21_decimal mh = DEFAULT_DECIMAL, ml = DEFAULT_DECIMAL;
+  div_without_signs_1n(v1, v2, &mh, &ml);
+  if (mh.bits[0] >= 5) {
+    return add_int_to_dec(*result, 1, result) == OK
+               ? OK
+               : (get_sign(result) == NEGATIVE ? TOO_SMALL : TOO_LARGE);
+  }
+  return OK;
 }
 
 int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,

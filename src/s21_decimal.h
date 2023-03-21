@@ -64,6 +64,8 @@ int s21_is_not_equal(s21_decimal, s21_decimal);
 
 // utils
 int get_bit(unsigned int val, int index);
+int handle_enough(s21_decimal *result, s21_decimal *v1, s21_decimal v2);
+int check_bank(s21_decimal *result, s21_decimal v1, s21_decimal v2);
 int get_decimal_bit(const s21_decimal *val, int index);
 void set_bit(unsigned int *val, int index, int bit);
 void set_decimal_bit(s21_decimal *val, int index, int bit);
@@ -79,6 +81,8 @@ int mul_dec_on_int(s21_decimal val, int num, s21_decimal *res);
 int mul_without_signs(s21_decimal a, s21_decimal b, s21_decimal *rh,
                       s21_decimal *rl);
 int div_dec_on_int(s21_decimal val, int num, s21_decimal *res);
+int div_without_signs_1n(s21_decimal a, s21_decimal b, s21_decimal *rh,
+                         s21_decimal *rl);
 int div_without_signs(s21_2n_decimal a, s21_2n_decimal b, s21_2n_decimal *rh,
                       s21_2n_decimal *rl);
 int add_same_signs(s21_decimal value_1, s21_decimal value_2,

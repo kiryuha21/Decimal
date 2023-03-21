@@ -88,17 +88,13 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
               rl_1n1 = rconvert(rl), rl_1n2 = rsconvert(rl);
 
   ret = try_add_overflow(&rh_1n1, rh_1n2);
-  if (ret != OK) {
-    return ret;
-  }
   ret = try_add_overflow(&rl_1n1, rl_1n2);
-  if (ret != OK) {
-    return ret;
-  }
 
   *result = rh_1n1;
   reduce_exponent(result);
 
+  set_sign(result,
+           get_sign(&value_1) == get_sign(&value_2) ? POSITIVE : NEGATIVE);
   if (get_exponent(&value_1) >= get_exponent(&value_2)) {
     set_exponent(&rh_1n1, get_exponent(&value_1) - get_exponent(&value_2));
   } else {
@@ -112,11 +108,27 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     set_exponent(result, 0);
   }
 
-  // ret = s21_div(rl_1n1, value_2, &rl_1n1);
+  s21_decimal v2 = value_2;
+  v2.bits[3] = 0;
+  s21_decimal v1 = rl_1n1;
+  v1.bits[3] = 0;
 
-  ret = s21_add(*result, rl_1n1, result);
+  while (is_zero(&v1) == FALSE && get_exponent(result) < 28) {
+    ret = handle_enough(result, &v1, v2);
+    if (ret != OK) {
+      return check_bank(result, v1, v2);
+    }
+    s21_decimal temp = *result;
+    ret = mul_dec_on_int(temp, 10, &temp);
+    if (ret != OK) {
+      return check_bank(result, v1, v2);
+    }
+    *result = temp;
+    set_exponent(result, get_exponent(result) + 1);
+  }
 
-  return ret;
+  reduce_exponent(result);
+  return check_bank(result, v1, v2);
 }
 
 int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
