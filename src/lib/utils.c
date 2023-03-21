@@ -162,6 +162,33 @@ int div_dec_on_int(s21_decimal val, int num, s21_decimal* res) {
   return (int)overflow;
 }
 
+int div_without_signs(s21_decimal a, s21_decimal b, s21_decimal* rh,
+                      s21_decimal* rl) {
+  if (is_zero(&b) == TRUE) {
+    return ZERO_DIVISION;
+  }
+
+  null_decimal_val(rh);
+  *rl = a;
+
+  s21_decimal c = DEFAULT_DECIMAL;
+
+  for (int i = 95; i >= 0; --i) {
+    left_shift_2n(rh, rl);
+    if (is_bigger(b, *rh) == TRUE) {
+      set_decimal_bit(&c, i, 0);
+    } else {
+      set_decimal_bit(&c, i, 1);
+      s21_sub(*rh, b, rh);
+    }
+  }
+
+  *rl = c;
+  swap_decimals(rl, rh);
+
+  return OK;
+}
+
 int add_same_signs(s21_decimal value_1, s21_decimal value_2,
                    s21_decimal* result) {
   set_sign(result, get_sign(&value_1));

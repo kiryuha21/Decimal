@@ -53,8 +53,8 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   }
 
   *result = rl;
-  int first_sign = get_sign(&value_1), second_sign = get_sign(&value_2);
-  if (first_sign != second_sign) {
+
+  if (get_sign(&value_1) != get_sign(&value_2)) {
     set_sign(result, NEGATIVE);
   } else {
     set_sign(result, POSITIVE);
@@ -66,7 +66,17 @@ int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 }
 
 int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
-  return OK;
+  if (!result) {
+    return ERROR;
+  }
+
+  null_decimal(result);
+
+  s21_decimal rh, rl;
+
+  int ret = div_without_signs(value_1, value_2, &rh, &rl);
+
+  return ret;
 }
 
 int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {

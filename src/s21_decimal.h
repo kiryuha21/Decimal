@@ -76,6 +76,8 @@ int mul_dec_on_int(s21_decimal val, int num, s21_decimal *res);
 int mul_without_signs(s21_decimal a, s21_decimal b, s21_decimal *rh,
                       s21_decimal *rl);
 int div_dec_on_int(s21_decimal val, int num, s21_decimal *res);
+int div_without_signs(s21_decimal a, s21_decimal b, s21_decimal *rh,
+                      s21_decimal *rl);
 int add_same_signs(s21_decimal value_1, s21_decimal value_2,
                    s21_decimal *result);
 int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
