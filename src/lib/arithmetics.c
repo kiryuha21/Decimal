@@ -74,6 +74,11 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
 
   s21_decimal rh, rl;
 
+  unsigned int exp1 = get_exponent(&value_1), exp2 = get_exponent(&value_2);
+
+  if (exp1 > exp2) {
+  }
+
   int ret = div_without_signs(value_1, value_2, &rh, &rl);
 
   return ret;

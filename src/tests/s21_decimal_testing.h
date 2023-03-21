@@ -14,7 +14,7 @@
     { -1, -1, -1, (NEGATIVE_DECIMAL) } \
   }
 
-#define SUITES_COUNT 4
+#define SUITES_COUNT 23
 
 Suite *get_arithmetics_suite();
 Suite *get_comparisons_suite();
@@ -39,5 +39,7 @@ Suite *suite_s21_from_float_to_decimal();
 Suite *suite_s21_from_int_to_decimal();
 Suite *suite_s21_round();
 Suite *suite_s21_truncate();
+Suite *suite_s21_mod();
+Suite *suite_s21_div();
 
 #endif  // C5_S21_DECIMAL_0_S21_DECIMAL_TESTING_H
