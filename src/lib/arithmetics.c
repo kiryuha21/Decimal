@@ -76,7 +76,6 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   }
 
   unsigned int scale;
-  s21_decimal overflow;
   s21_2n_decimal val1 = convert(value_1), val2 = convert(value_2),
                  rh = DEFAULT_DECIMAL, rl = DEFAULT_DECIMAL;
   int ret = scale_2n_decimal(&val1, &val2, &scale);
@@ -113,6 +112,10 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     set_exponent(result, 0);
   }
 
+  // ret = s21_div(rl_1n1, value_2, &rl_1n1);
+
+  ret = s21_add(*result, rl_1n1, result);
+
   return ret;
 }
 
@@ -127,7 +130,6 @@ int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   }
 
   unsigned int scale;
-  s21_decimal overflow;
   s21_2n_decimal val1 = convert(value_1), val2 = convert(value_2),
                  rh = DEFAULT_DECIMAL, rl = DEFAULT_DECIMAL;
   int ret = scale_2n_decimal(&val1, &val2, &scale);
@@ -136,8 +138,7 @@ int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
   if (ret != OK) {
     return ret;
   }
-  s21_decimal rh_1n1 = rconvert(rh), rh_1n2 = rsconvert(rh),
-              rl_1n1 = rconvert(rl), rl_1n2 = rsconvert(rl);
+  s21_decimal rl_1n1 = rconvert(rl), rl_1n2 = rsconvert(rl);
 
   ret = try_add_overflow(&rl_1n1, rl_1n2);
   if (ret != OK) {
