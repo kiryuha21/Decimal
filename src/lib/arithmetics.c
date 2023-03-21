@@ -75,21 +75,33 @@ int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     return ZERO_DIVISION;
   }
 
-  s21_decimal rh = DEFAULT_DECIMAL, rl = DEFAULT_DECIMAL;
-
   unsigned int scale;
   s21_decimal overflow;
-  int ret = scale_decimals(&value_1, &value_2, &scale, &overflow);
+  s21_2n_decimal val1 = convert(value_1), val2 = convert(value_2),
+                 rh = DEFAULT_DECIMAL, rl = DEFAULT_DECIMAL;
+  int ret = scale_2n_decimal(&val1, &val2, &scale);
 
-  ret = div_without_signs(value_1, value_2, &rh, &rl);
+  ret = div_without_signs(val1, val2, &rh, &rl);
   if (ret != OK) {
     return ret;
   }
-  *result = rh;
+  s21_decimal rh_1n1 = rconvert(rh), rh_1n2 = rsconvert(rh),
+              rl_1n1 = rconvert(rl), rl_1n2 = rsconvert(rl);
+
+  ret = try_add_overflow(&rh_1n1, rh_1n2);
+  if (ret != OK) {
+    return ret;
+  }
+  ret = try_add_overflow(&rl_1n1, rl_1n2);
+  if (ret != OK) {
+    return ret;
+  }
+
+  *result = rh_1n1;
   reduce_exponent(result);
 
   if (get_exponent(&value_1) >= get_exponent(&value_2)) {
-    set_exponent(&rh, get_exponent(&value_1) - get_exponent(&value_2));
+    set_exponent(&rh_1n1, get_exponent(&value_1) - get_exponent(&value_2));
   } else {
     for (unsigned int i = get_exponent(&value_2); i < get_exponent(&value_1);
          ++i) {
@@ -114,19 +126,29 @@ int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) {
     return ZERO_DIVISION;
   }
 
-  s21_decimal rh = DEFAULT_DECIMAL, rl = DEFAULT_DECIMAL;
-
   unsigned int scale;
   s21_decimal overflow;
-  scale_decimals(&value_1, &value_2, &scale, &overflow);
+  s21_2n_decimal val1 = convert(value_1), val2 = convert(value_2),
+                 rh = DEFAULT_DECIMAL, rl = DEFAULT_DECIMAL;
+  int ret = scale_2n_decimal(&val1, &val2, &scale);
 
-  int ret = div_without_signs(value_1, value_2, &rh, &rl);
+  ret = div_without_signs(val1, val2, &rh, &rl);
+  if (ret != OK) {
+    return ret;
+  }
+  s21_decimal rh_1n1 = rconvert(rh), rh_1n2 = rsconvert(rh),
+              rl_1n1 = rconvert(rl), rl_1n2 = rsconvert(rl);
 
-  set_exponent(&rl, scale);
-  set_sign(&rl, get_sign(&value_1));
-  reduce_exponent(&rl);
+  ret = try_add_overflow(&rl_1n1, rl_1n2);
+  if (ret != OK) {
+    return ret;
+  }
 
-  *result = rl;
+  *result = rl_1n1;
+
+  set_exponent(result, scale);
+  set_sign(result, get_sign(&value_1));
+  reduce_exponent(result);
 
   return ret;
 }

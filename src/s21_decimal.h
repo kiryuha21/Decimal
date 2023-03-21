@@ -11,12 +11,16 @@
 #define NULL_BITS_MASK 0x80FF0000
 #define DEFAULT_DECIMAL \
   {                     \
-    { 0, 0, 0, 0 }      \
+    { 0 }               \
   }
 
 typedef struct s21_decimal {
   unsigned int bits[4];
 } s21_decimal;
+
+typedef struct s21_2n_decimal {
+  unsigned int bits[7];
+} s21_2n_decimal;
 
 // common for all functions except compare ones
 #define OK 0
@@ -75,21 +79,30 @@ int mul_dec_on_int(s21_decimal val, int num, s21_decimal *res);
 int mul_without_signs(s21_decimal a, s21_decimal b, s21_decimal *rh,
                       s21_decimal *rl);
 int div_dec_on_int(s21_decimal val, int num, s21_decimal *res);
-int div_without_signs(s21_decimal a, s21_decimal b, s21_decimal *rh,
-                      s21_decimal *rl);
+int div_without_signs(s21_2n_decimal a, s21_2n_decimal b, s21_2n_decimal *rh,
+                      s21_2n_decimal *rl);
 int add_same_signs(s21_decimal value_1, s21_decimal value_2,
                    s21_decimal *result);
 int sub_diff_signs(s21_decimal value_1, s21_decimal value_2,
                    s21_decimal *result);
+int sub_diff_signs_2n(s21_2n_decimal value_1, s21_2n_decimal value_2,
+                      s21_2n_decimal *result);
+s21_2n_decimal convert(s21_decimal val);
+s21_decimal rconvert(s21_2n_decimal val);
+s21_decimal rsconvert(s21_2n_decimal val);
 int scale_decimals(s21_decimal *num1, s21_decimal *num2, unsigned int *scale,
                    s21_decimal *overflow);
+int scale_2n_decimal(s21_2n_decimal *val1, s21_2n_decimal *val2,
+                     unsigned int *exp);
 void null_decimal(s21_decimal *val);
 void null_decimal_val(s21_decimal *val);
 void swap_decimals(s21_decimal *val1, s21_decimal *val2);
+void swap_decimals_2n(s21_2n_decimal *val1, s21_2n_decimal *val2);
 void reduce_exponent(s21_decimal *val);
 int get_elder_bit_index(const s21_decimal *val);
 int left_shift(s21_decimal *val);
 int left_shift_2n(s21_decimal *dh, s21_decimal *dl);
+int left_shift_4n(s21_2n_decimal *dh, s21_2n_decimal *dl);
 int right_shift(s21_decimal *val);
 int right_shift_2n(s21_decimal *dh, s21_decimal *dl);
 void handle_decimal_inc(s21_decimal *val);
